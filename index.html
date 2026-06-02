@@ -1,13 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Elactironic | Salohiddin</title>
-    <link rel="stylesheet" href="./scss/main.css">
-</head>
-<body>
-    <h1>Itadori Yuji</h1>
-</body>
-<script src="./main.js"></script>
+    <link rel="stylesheet" href="./scss/main.css" />
+    <link
+      rel="icon"
+      href="./imgs/violet-color-solid-background-1920x1080.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="container">
+          <h1>
+            SPHERE
+            <div class="dote"></div>
+          </h1>
+          <ul class="nav-link">
+            <li>Home</li>
+            <li>Pricing</li>
+            <li>Events</li>
+            <li>Company</li>
+          </ul>
+          <ul class="nav-btn">
+            <li><button>Login</button></li>
+            <li>
+              <button>
+                Sing up now <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="hero">
+        <div class="container">
+          <div class="hero_card">
+            <h1>Grab 50% Off Smartphone Collection</h1>
+            <p>
+              Lorem ipsum dolor sit amet consectetur. <br />
+              Eleifend nec morbi tellus vitae leo nunc.
+            </p>
+            <div class="bottom">
+              <img src="./imgs/hero img1.png" alt="" />
+              <h2>Xiphone 14 Edition</h2>
+            </div>
+          </div>
+          <div class="hero_card2">
+            <div class="cube-big"></div>
+            <div class="cube-small"></div>
+            <div class="hero-info">
+              <h2>HIGHEST</h2>
+              <h2>QUALITY</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="intro">
+        <div class="container"></div>
+      </section>
+    </main>
+    <footer>
+      <div class="container"></div>
+    </footer>
+  </body>
+  <script src="./main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <script>
+    VANTA.NET({
+      el: "body",
+      color: 0x6c3cff,
+      backgroundColor: 0x080818,
+      points: 10,
+      maxDistance: 20,
+    });
+  </script>
 </html>
