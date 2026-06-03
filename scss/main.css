@@ -4,6 +4,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
+  z-index: 500;
 }
 
 #tsparticles,
@@ -20,6 +21,15 @@ canvas {
 .container {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+section,
+.hero,
+.intro,
+main,
+div[class*=section-] {
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 body {
@@ -45,11 +55,12 @@ ul {
 }
 
 nav {
-  position: sticky;
+  position: fixed !important;
   top: 0px;
   width: 100%;
-  background-color: white;
-  z-index: 999;
+  backdrop-filter: blur(10px);
+  z-index: 9999 !important;
+  color: white;
 }
 nav .container {
   padding: 10px 0px;
@@ -132,6 +143,7 @@ nav .container .nav-btn button:nth-of-type(1) {
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  color: white !important;
 }
 nav .container .nav-btn button:nth-of-type(1):hover {
   background-color: #5d17c4;
@@ -150,6 +162,7 @@ nav .container .nav-btn button:nth-of-type(2) {
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  color: white !important;
 }
 nav .container .nav-btn button:nth-of-type(2):hover {
   background-color: #5d17c4;
@@ -164,6 +177,7 @@ nav .container .nav-btn button:nth-of-type(2):active {
 .hero {
   color: white;
   overflow-y: hidden;
+  z-index: 500;
 }
 .hero .container {
   padding: 100px 0px;
@@ -246,4 +260,402 @@ nav .container .nav-btn button:nth-of-type(2):active {
 .hero .container .hero_card2 .hero-info h2:nth-of-type(2):hover {
   transform: rotate(0deg) scale(1.1);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+.intro {
+  position: relative;
+  z-index: 1;
+}
+.intro .container {
+  padding: 50px 0px;
+}
+.intro .container .intro_title {
+  text-align: center;
+  color: white;
+  padding: 30px 0px;
+}
+.intro .container .intro_title h1 {
+  font-size: 50px;
+}
+.intro .container .intro_title h1 span {
+  color: #5d17c4;
+}
+.intro .container .intro_box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.intro .container .intro_box .intro_card {
+  width: 150px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  text-align: center;
+  cursor: pointer;
+}
+.intro .container .intro_box .intro_card i {
+  color: white;
+  font-size: 35px;
+  width: 60px;
+  height: 60px;
+  box-shadow: 0px 0px 10px #5d17c4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.intro .container .intro_box .intro_card i:hover {
+  background-color: #5d17c4;
+  color: white;
+}
+.intro .container .intro_box .intro_card p {
+  color: white;
+}
+
+.two .container {
+  padding: 50px 0px;
+  z-index: 500;
+}
+.two .container .two_title {
+  padding: 30px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.two .container .two_title h1 {
+  color: white;
+  text-align: center;
+}
+.two .container .two_title h1 span {
+  color: #5d17c4;
+}
+.two .container .two_title .move-btns {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.two .container .two_title .move-btns button {
+  padding: 10px 10px;
+  border: 1px solid transparent;
+  background-color: #AFE638;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.two .container .two_title .move-btns button:hover {
+  background-color: white;
+  color: #AFE638;
+  border: 1px solid #AFE638;
+}
+.two .container .two_box {
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  gap: 30px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+}
+.two .container .two_box::-webkit-scrollbar {
+  height: 10px;
+  color: #5d17c4;
+}
+.two .container .two_box::-webkit-scrollbar-thumb {
+  background: #5d17c4;
+  border-radius: 10px;
+}
+.two .container .two_box::-webkit-scrollbar-track {
+  background: transparent;
+}
+.two .container .two_box .two_card {
+  width: 400px;
+  padding: 10px;
+  box-shadow: 0px 0px 5px 5px rgba(243, 233, 143, 0.4039215686);
+  border-radius: 20px;
+  background-color: white;
+  min-width: 400px;
+  flex: 0 0 400px;
+}
+.two .container .two_box .two_card .heart {
+  width: 200px;
+  margin: 0 auto;
+  height: 300px;
+  position: relative;
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+.two .container .two_box .two_card .heart img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.two .container .two_box .two_card .heart i {
+  position: absolute;
+  top: 10px;
+  right: -50px;
+  width: 40px;
+  height: 40px;
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.two .container .two_box .two_card .heart i:hover {
+  background-color: white;
+  color: red;
+  border: 1px solid black;
+}
+.two .container .two_box .two_card .heart i:active {
+  transform: scale(0.9);
+}
+.two .container .two_box .two_card .heart i:focus {
+  background-color: red;
+  color: white;
+}
+.two .container .two_box .two_card h2 {
+  padding: 20px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.two .container .two_box .two_card p {
+  padding: 10px;
+  font-weight: 400;
+}
+.two .container .two_box .two_card .stars i {
+  color: #AFE638;
+}
+.two .container .two_box .two_card .stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 20px 0px;
+}
+.two .container .two_box .two_card button {
+  padding: 10px 20px;
+  border: 1px solid black;
+  color: black;
+  background-color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.two .container .two_box .two_card button:hover {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+}
+
+.three .container {
+  padding: 50px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.three .container .three_card:nth-of-type(1) {
+  width: 500px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+.three .container .three_card:nth-of-type(1) h1 {
+  text-align: center;
+  color: black;
+  padding: 10px 0px;
+}
+.three .container .three_card:nth-of-type(1) .three_info {
+  position: relative;
+}
+.three .container .three_card:nth-of-type(1) .three_info img {
+  width: 300px;
+  height: 200px;
+}
+.three .container .three_card:nth-of-type(1) .three_info button {
+  position: absolute;
+  left: 70px;
+  bottom: 0px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #5d17c4;
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.three .container .three_card:nth-of-type(1) .three_info button:hover {
+  transform: scale(1.1);
+}
+.three .container .three_card:nth-of-type(1) .three_info button:active {
+  transform: scale(0.9);
+}
+.three .container .three_card:nth-of-type(2) {
+  width: 500px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+.three .container .three_card:nth-of-type(2) h1 {
+  text-align: center;
+  color: black;
+  padding: 10px 0px;
+}
+.three .container .three_card:nth-of-type(2) .three_info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column-reverse;
+}
+.three .container .three_card:nth-of-type(2) .three_info img {
+  width: 300px;
+  height: 200px;
+}
+.three .container .three_card:nth-of-type(2) .three_info button {
+  position: absolute;
+  left: 70px;
+  top: 0px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #5d17c4;
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.three .container .three_card:nth-of-type(2) .three_info button:hover {
+  transform: scale(1.1);
+}
+.three .container .three_card:nth-of-type(2) .three_info button:active {
+  transform: scale(0.9);
+}
+.three .container .three_card:nth-of-type(3) {
+  width: 470px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+.three .container .three_card:nth-of-type(3) h1 {
+  text-align: left;
+  color: black;
+  padding: 10px 0px;
+}
+.three .container .three_card:nth-of-type(3) .three_info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column-reverse;
+}
+.three .container .three_card:nth-of-type(3) .three_info img {
+  width: 300px;
+  height: 200px;
+}
+.three .container .three_card:nth-of-type(3) .three_info button {
+  position: absolute;
+  left: -30px;
+  bottom: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #5d17c4;
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.three .container .three_card:nth-of-type(3) .three_info button:hover {
+  transform: scale(1.1);
+}
+.three .container .three_card:nth-of-type(3) .three_info button:active {
+  transform: scale(0.9);
+}
+.three .container .three_card:nth-of-type(4) {
+  width: 470px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+.three .container .three_card:nth-of-type(4) h1 {
+  text-align: left;
+  color: black;
+  padding: 10px 0px;
+}
+.three .container .three_card:nth-of-type(4) .three_info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.three .container .three_card:nth-of-type(4) .three_info img {
+  width: 300px;
+  height: 200px;
+}
+.three .container .three_card:nth-of-type(4) .three_info button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #5d17c4;
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.three .container .three_card:nth-of-type(4) .three_info button:hover {
+  transform: scale(1.1);
+}
+.three .container .three_card:nth-of-type(4) .three_info button:active {
+  transform: scale(0.9);
+}
+
+.four .container {
+  padding: 50px 0px;
+}
+.four .container .four_title {
+  padding: 30px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+.four .container .four_title h1 span {
+  color: #5d17c4;
+}
+.four .container .four_title i {
+  color: #AFE638;
+  font-size: 30px;
+  animation: star 5s linear infinite;
+}
+@keyframes star {
+  0% {
+    transform: rotate(0) scale(1);
+  }
+  50% {
+    transform: rotate(360deg) scale(1.5);
+  }
+  100% {
+    transform: rotate(-360deg) scale(1);
+  }
 }/*# sourceMappingURL=main.css.map */
