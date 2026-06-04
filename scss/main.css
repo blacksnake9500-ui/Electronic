@@ -658,4 +658,164 @@ nav .container .nav-btn button:nth-of-type(2):active {
   100% {
     transform: rotate(-360deg) scale(1);
   }
+}
+.four .container .four_box {
+  padding: 20px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+.four .container .four_box .four_card {
+  width: 400px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.four .container .four_box .four_card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 10px 10px #5d17c4;
+}
+.four .container .four_box .four_card .card_top {
+  width: 300px;
+  text-align: center;
+  position: relative;
+}
+.four .container .four_box .four_card .card_top img:nth-of-type(2) {
+  width: 300px;
+  height: 200px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  margin: 0 auto;
+}
+.four .container .four_box .four_card .card_top img:nth-of-type(1) {
+  position: absolute;
+  right: -90px;
+  top: 0px;
+}
+.four .container .four_box .four_card .card_top h3 {
+  position: absolute;
+  right: -60px;
+  top: 20px;
+  background: linear-gradient(90deg, red, yellow, red);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: shine 1s linear infinite;
+}
+@keyframes shine {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+.four .container .four_box .four_card .card_top h2 {
+  color: #0177FC;
+}
+.four .container .four_box .four_card .four_info h2 {
+  padding: 20px 0px;
+}
+.four .container .four_box .four_card .four_info p {
+  padding-bottom: 10px;
+}
+.four .container .four_box .four_card .four_info .four_stars {
+  display: flex;
+  align-items: start;
+  gap: 5px;
+  padding: 10px 0px;
+}
+.four .container .four_box .four_card .four_info .four_stars i {
+  color: #AFE638;
+}
+.four .container .four_box .four_card .four_info button {
+  padding: 10px 20px;
+  border: 1px solid black;
+  border-radius: 50px;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.four .container .four_box .four_card .four_info button:hover {
+  background-color: black;
+  color: white;
+  transform: scale(1.1);
+}
+.four .container .four_box .four_card .four_info button:active {
+  transform: scale(0.9);
+}
+
+.fife .container {
+  background-color: #212736;
+  padding: 50px 20px;
+  border-radius: 20px;
+  position: relative;
+}
+.fife .container .trengle {
+  width: 100px;
+  height: 50px;
+  background: #212736;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  position: absolute;
+  top: -50px;
+  left: 500px;
+}
+.fife .container .fife_box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.fife .container .fife_box .fife_card h1:nth-of-type(1) {
+  color: white;
+  font-size: 40px;
+  padding: 20px;
+}
+.fife .container .fife_box .fife_card h1:nth-of-type(2) {
+  font-weight: 900;
+  position: relative;
+  color: white;
+}
+.fife .container .fife_box .fife_card h1:nth-of-type(2) .dote {
+  position: absolute;
+  top: -7px;
+  left: 120px;
+  width: 20px;
+  height: 20px;
+  background-color: #5E1EE5;
+  border-radius: 50%;
+  z-index: -1;
+  animation: pulse 2s infinite, orbit 4s linear infinite;
+}
+.fife .container .fife_box form {
+  width: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: #EFF0F1;
+}
+.fife .container .fife_box form input {
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+.fife .container .fife_box form button {
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  background-color: #AFE638;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.fife .container .fife_box form button:hover {
+  background-color: #a7e424;
 }/*# sourceMappingURL=main.css.map */
