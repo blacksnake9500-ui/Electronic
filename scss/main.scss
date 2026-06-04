@@ -779,5 +779,208 @@ nav {
                 }
             }
         }
+
+        .four_box {
+            padding: 20px 0px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+
+            .four_card {
+                width: 400px;
+                background-color: white;
+                border-radius: 10px;
+                padding: 10px;
+                transition: all .3s ease;
+                cursor: pointer;
+
+                &:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0px 0px 10px 10px #5d17c4;
+                }
+
+                .card_top {
+                    width: 300px;
+                    text-align: center;
+                    position: relative;
+
+                    img {
+                        &:nth-of-type(2) {
+                            width: 300px;
+                            height: 200px;
+                            object-fit: contain;
+                            margin: 0 auto;
+                        }
+                    }
+
+                    img {
+                        &:nth-of-type(1) {
+                            position: absolute;
+                            right: -90px;
+                            top: 0px;
+                        }
+                    }
+
+                    h3 {
+                        position: absolute;
+                        right: -60px;
+                        top: 20px;
+                        background: linear-gradient(90deg, red, yellow, red);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-size: 200% auto;
+                        animation: shine 1s linear infinite;
+                    }
+
+                    @keyframes shine {
+                        0% {
+                            background-position: 0% center;
+                        }
+
+                        100% {
+                            background-position: 200% center;
+                        }
+                    }
+
+                    h2 {
+                        color: #0177FC;
+                    }
+                }
+
+                .four_info {
+                    h2 {
+                        padding: 20px 0px;
+
+                    }
+
+                    p {
+                        padding-bottom: 10px;
+                    }
+
+                    .four_stars {
+                        display: flex;
+                        align-items: start;
+                        gap: 5px;
+                        padding: 10px 0px;
+
+                        i {
+                            color: #AFE638;
+                        }
+                    }
+
+                    button {
+                        padding: 10px 20px;
+                        border: 1px solid black;
+                        border-radius: 50px;
+                        background-color: white;
+                        color: black;
+                        cursor: pointer;
+                        transition: all .3s ease;
+
+                        &:hover {
+                            background-color: black;
+                            color: white;
+                            transform: scale(1.1);
+                        }
+
+                        &:active {
+                            transform: scale(0.9);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.fife {
+    .container {
+        background-color: #212736;
+        padding: 50px 20px;
+        border-radius: 20px;
+        position: relative;
+
+        .trengle {
+            width: 100px;
+            height: 50px;
+            background: #212736;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            position: absolute;
+            top: -50px;
+            left: 500px;
+        }
+
+        .fife_box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .fife_card {
+                h1 {
+                    &:nth-of-type(1) {
+                        color: white;
+                        font-size: 40px;
+                        padding: 20px;
+                    }
+                }
+
+                h1 {
+                    &:nth-of-type(2) {
+                        font-weight: 900;
+                        position: relative;
+                        color: white;
+
+                        .dote {
+                            position: absolute;
+                            top: -7px;
+                            left: 120px;
+                            width: 20px;
+                            height: 20px;
+                            background-color: #5E1EE5;
+                            border-radius: 50%;
+                            z-index: -1;
+                            animation: pulse 2s infinite, orbit 4s linear infinite;
+                        }
+                    }
+                }
+            }
+
+            form {
+                width: 400px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                border-radius: 10px;
+                background-color: #EFF0F1;
+
+                input {
+                    width: 100%;
+                    padding: 10px 20px;
+                    border-radius: 10px;
+                    border: none;
+                    outline: none;
+                }
+
+                button {
+                    width: 100%;
+                    padding: 10px 20px;
+                    border: none;
+                    outline: none;
+                    background-color: #AFE638;
+                    color: white;
+                    border-radius: 10px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #a7e424;
+                    }
+                }
+            }
+        }
+
+
+
     }
 }
