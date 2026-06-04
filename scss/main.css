@@ -23,6 +23,10 @@ canvas {
   margin: 0 auto;
 }
 
+.show {
+  display: block;
+}
+
 section,
 .hero,
 .intro,
@@ -67,6 +71,101 @@ nav .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+}
+nav .container .sing {
+  position: absolute;
+  width: 100%;
+  max-height: calc(100vh - 60px);
+  left: 0px;
+  top: 30px;
+  background: linear-gradient(45deg, #212736, #5E1EE5, #5d17c4, #5E1EE5, #212736);
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  display: none;
+}
+nav .container .sing.show {
+  display: flex;
+}
+nav .container .sing button {
+  padding: 10px 20px;
+  border: 1px solid #FFE921;
+  background-color: #FFE921;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+nav .container .sing button:hover {
+  transform: scale(1.1);
+}
+nav .container .sing button:active {
+  transform: scale(0.9);
+}
+nav .container .sing form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+  padding-top: 100px;
+}
+nav .container .sing form input {
+  padding: 10px 20px;
+  border-radius: 20px 5px 20px 5px;
+  outline: none;
+  width: 400px;
+  transition: all 0.3s ease;
+  border: 1px solid #5d17c4;
+  font-size: 30px;
+  color: #5d17c4;
+}
+nav .container .sing form input:focus {
+  border: 2px solid #5d17c4;
+}
+nav .container .sing form input[type=file] {
+  cursor: pointer;
+  color: #5d17c4;
+  width: 400px;
+  padding: 14px 20px;
+  border-radius: 20px 5px 20px 5px;
+  border: 2px dashed rgba(93, 23, 196, 0.7);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+nav .container .sing form input[type=file]:hover {
+  border-color: #8c6cff;
+  background: rgba(255, 255, 255, 0.12);
+}
+nav .container .sing form input[type=file]::file-selector-button {
+  cursor: pointer;
+  border: none;
+  padding: 10px 18px;
+  margin-right: 10px;
+  border-radius: 12px;
+  background: #5d17c4;
+  color: white;
+  font-size: 14px;
+}
+nav .container .sing form .avatar-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.25);
+  display: none;
 }
 nav .container ul {
   display: flex;
@@ -135,6 +234,35 @@ nav .container .nav-link li::after {
 nav .container .nav-link li:hover::after {
   width: 100%;
 }
+nav .container .nav-btn li.user-info {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 14px;
+}
+nav .container .nav-btn li.user-info.show {
+  display: flex;
+}
+nav .container .nav-btn .avatar-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+}
+nav .container .nav-btn .current-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: none;
+}
 nav .container .nav-btn button:nth-of-type(1) {
   padding: 10px 20px;
   border: 2px solid #5E1EE5;
@@ -154,7 +282,7 @@ nav .container .nav-btn button:nth-of-type(1):hover {
 nav .container .nav-btn button:nth-of-type(1):active {
   transform: translateY(0);
 }
-nav .container .nav-btn button:nth-of-type(2) {
+nav .container .nav-btn button:nth-of-type(2), nav .container .nav-btn button.logout_btn {
   padding: 10px 20px;
   border: 2px solid #5E1EE5;
   background-color: transparent;
@@ -163,15 +291,146 @@ nav .container .nav-btn button:nth-of-type(2) {
   cursor: pointer;
   transition: all 0.3s ease;
   color: white !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-nav .container .nav-btn button:nth-of-type(2):hover {
+nav .container .nav-btn button:nth-of-type(2) .nav-avatar, nav .container .nav-btn button.logout_btn .nav-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+nav .container .nav-btn button:nth-of-type(2):hover, nav .container .nav-btn button.logout_btn:hover {
   background-color: #5d17c4;
   color: #ffffff;
   box-shadow: 0 4px 15px rgba(93, 23, 196, 0.4);
   transform: translateY(-2px);
 }
-nav .container .nav-btn button:nth-of-type(2):active {
+nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn button.logout_btn:active {
   transform: translateY(0);
+}
+
+.cart-modal {
+  position: fixed;
+  display: none;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+}
+
+.cart-modal.show {
+  display: flex;
+}
+
+.cart-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.cart-modal-box {
+  width: min(520px, 100% - 40px);
+  max-height: 80vh;
+  min-height: 0;
+  background: rgba(18, 16, 33, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  z-index: 2;
+}
+
+.cart-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  cursor: grab;
+}
+.cart-items:active {
+  cursor: grabbing;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.cart-item img {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.cart-item-info {
+  flex: 1;
+}
+.cart-item-info h3 {
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+.cart-item-info p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cart-item-price {
+  font-weight: 700;
+  color: #fff;
+}
+
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 14px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 14px;
+  background: #5e1ee5;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.checkout-btn:hover {
+  transform: translateY(-1px);
 }
 
 .hero {
@@ -858,9 +1117,9 @@ footer .container .footer_card h1 .dote {
 
 @media (max-width: 700px) {
   .container {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 0px 10px;
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    padding: 0px 10px !important;
   }
   nav {
     position: fixed !important;
@@ -1279,7 +1538,7 @@ footer .container .footer_card h1 .dote {
     flex-wrap: wrap;
   }
   .three .container .three_card:nth-of-type(1) {
-    width: 500px;
+    width: 100%;
     text-align: center;
     display: flex;
     align-items: center;
@@ -1319,7 +1578,7 @@ footer .container .footer_card h1 .dote {
     transform: scale(0.9);
   }
   .three .container .three_card:nth-of-type(2) {
-    width: 500px;
+    width: 100%;
     text-align: center;
     display: flex;
     align-items: center;
@@ -1363,7 +1622,7 @@ footer .container .footer_card h1 .dote {
     transform: scale(0.9);
   }
   .three .container .three_card:nth-of-type(3) {
-    width: 470px;
+    width: 100%;
     text-align: center;
     display: flex;
     align-items: center;
@@ -1407,7 +1666,7 @@ footer .container .footer_card h1 .dote {
     transform: scale(0.9);
   }
   .three .container .three_card:nth-of-type(4) {
-    width: 470px;
+    width: 100%;
     text-align: center;
     display: flex;
     align-items: center;
@@ -1424,7 +1683,8 @@ footer .container .footer_card h1 .dote {
   .three .container .three_card:nth-of-type(4) .three_info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    flex-direction: column;
   }
   .three .container .three_card:nth-of-type(4) .three_info img {
     width: 300px;
@@ -1485,7 +1745,7 @@ footer .container .footer_card h1 .dote {
     text-align: center;
   }
   .four .container .four_box .four_card {
-    width: 400px;
+    width: 100%;
     background-color: white;
     border-radius: 10px;
     padding: 10px;
@@ -1493,7 +1753,7 @@ footer .container .footer_card h1 .dote {
     cursor: pointer;
   }
   .four .container .four_box .four_card:hover {
-    transform: scale(1.05);
+    transform: scale(1.01);
     box-shadow: 0px 0px 10px 10px #5d17c4;
   }
   .four .container .four_box .four_card .card_top {
@@ -1510,12 +1770,12 @@ footer .container .footer_card h1 .dote {
   }
   .four .container .four_box .four_card .card_top img:nth-of-type(1) {
     position: absolute;
-    right: -90px;
+    right: 0px;
     top: 0px;
   }
   .four .container .four_box .four_card .card_top h3 {
     position: absolute;
-    right: -60px;
+    right: 30px;
     top: 20px;
     background: linear-gradient(90deg, red, yellow, red);
     -webkit-background-clip: text;
@@ -1579,7 +1839,8 @@ footer .container .footer_card h1 .dote {
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
     position: absolute;
     top: -50px;
-    left: 200px;
+    display: none;
+    left: auto;
   }
   .fife .container .fife_box {
     display: flex;
@@ -1610,7 +1871,7 @@ footer .container .footer_card h1 .dote {
     animation: pulse 2s infinite, orbit 4s linear infinite;
   }
   .fife .container .fife_box form {
-    width: 400px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1658,7 +1919,8 @@ footer .container .footer_card h1 .dote {
     color: #5d17c4;
   }
   footer .container .footer_card {
-    width: 400px;
+    width: 100%;
+    text-align: center;
   }
   footer .container .footer_card h1 {
     text-align: center;
