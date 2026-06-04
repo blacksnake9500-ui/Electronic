@@ -818,4 +818,40 @@ nav .container .nav-btn button:nth-of-type(2):active {
 }
 .fife .container .fife_box form button:hover {
   background-color: #a7e424;
+}
+
+footer .container {
+  padding: 50px 0px;
+  color: white;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+footer .container ul {
+  line-height: 30px;
+}
+footer .container ul li {
+  cursor: pointer;
+}
+footer .container ul li:hover {
+  color: #5d17c4;
+}
+footer .container .footer_card {
+  width: 400px;
+}
+footer .container .footer_card h1 {
+  font-weight: 900;
+  position: relative;
+  color: white;
+}
+footer .container .footer_card h1 .dote {
+  position: absolute;
+  top: -7px;
+  left: 120px;
+  width: 20px;
+  height: 20px;
+  background-color: #5E1EE5;
+  border-radius: 50%;
+  z-index: -1;
+  animation: pulse 2s infinite, orbit 4s linear infinite;
 }/*# sourceMappingURL=main.css.map */
