@@ -984,3 +984,49 @@ nav {
 
     }
 }
+
+footer {
+    .container {
+        padding: 50px 0px;
+        color: white;
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+
+        ul {
+            line-height: 30px;
+
+            li {
+                cursor: pointer;
+
+                &:hover {
+                    color: #5d17c4;
+                }
+            }
+        }
+
+        .footer_card {
+            width: 400px;
+
+            h1 {
+
+                font-weight: 900;
+                position: relative;
+                color: white;
+
+                .dote {
+                    position: absolute;
+                    top: -7px;
+                    left: 120px;
+                    width: 20px;
+                    height: 20px;
+                    background-color: #5E1EE5;
+                    border-radius: 50%;
+                    z-index: -1;
+                    animation: pulse 2s infinite, orbit 4s linear infinite;
+                }
+
+            }
+        }
+    }
+}
