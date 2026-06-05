@@ -25,9 +25,9 @@
         position: relative;
         width: 800px;
         height: 600px;
-        background: linear-gradient(to bottom, #0a0e27 0%, #1a1a2e 100%);
+        background: linear-gradient(135deg, #0a0e27 0%, #16213e 100%);
         border: 3px solid #00ff88;
-        box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        /* box-shadow olib tashlandi */
         overflow: hidden;
       }
 
@@ -50,7 +50,6 @@
         color: #00ff88;
         font-size: 18px;
         z-index: 10;
-        text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
       }
 
       .score {
@@ -91,7 +90,6 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(10, 14, 39, 0.95);
         padding: 40px;
         border: 3px solid #ff0055;
         border-radius: 10px;
@@ -105,7 +103,7 @@
         color: #ff0055;
         margin-bottom: 20px;
         font-size: 32px;
-        text-shadow: 0 0 20px rgba(255, 0, 85, 0.8);
+        /* text-shadow olib tashlandi */
       }
 
       .game-over p {
@@ -478,8 +476,21 @@
 
         player.dx = 0;
         if (!player.isFrozen) {
-          if (keys["ArrowLeft"] || keys["a"]) player.dx = -player.speed;
-          if (keys["ArrowRight"] || keys["d"]) player.dx = player.speed;
+          if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
+          if (keys["ArrowRight"] && player.x < canvas.width - player.width)
+            player.x += player.speed;
+        }
+
+        if (!player.isFrozen) {
+          if ((keys["ArrowLeft"] || keys["a"] || keys["A"]) && player.x > 0) {
+            player.x -= player.speed;
+          }
+          if (
+            (keys["ArrowRight"] || keys["d"] || keys["D"]) &&
+            player.x < canvas.width - player.width
+          ) {
+            player.x += player.speed;
+          }
         }
 
         player.x += player.dx;
@@ -628,21 +639,22 @@
             bossEnemy.y < player.y
           ) {
             bossEnemy.health -= 0.15;
-            if (bossEnemy.health <= 0) {
+            if (bossEnemy.hp <= 0) {
+              // 1. Ko'p emas, atigi 20 ta xavfsiz zarracha yaratamiz (lag bermasligi uchun)
               createExplosion(
                 bossEnemy.x + bossEnemy.width / 2,
                 bossEnemy.y + bossEnemy.height / 2,
-                25,
-                bossEnemy.type === "green"
-                  ? "#00ff88"
-                  : bossEnemy.type === "yellow"
-                    ? "#ffd700"
-                    : "#ff0033",
+                20,
+                "#ff0055",
               );
-              score += 200;
-              player.lives++;
+
+              // 2. Bossni darhol o'chiramiz, toki boshqa o'qlar unga tegib xato bermasin
               bossEnemy = null;
-              bossSpawnTimer = 0;
+              score += 100;
+
+              // 3. Mukofot rejimi va taymerini qat'iy belgilaymiz
+              player.laserActive = true;
+              player.laserTimer = 200; // Bu taymer update ichida kamayishi shart!
             }
           }
         }
@@ -1121,6 +1133,8 @@
 
       // Draw Screen
       function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         ctx.fillStyle = "rgba(10, 14, 39, 0.1)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
