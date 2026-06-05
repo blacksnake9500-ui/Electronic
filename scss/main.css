@@ -31,7 +31,7 @@ section,
 .hero,
 .intro,
 main,
-div[class*=section-] {
+div[class*="section-"] {
   position: relative !important;
   z-index: 1 !important;
 }
@@ -43,13 +43,13 @@ body {
 }
 
 ::-moz-selection {
-  background-color: #5E1EE5;
+  background-color: #5e1ee5;
   color: white;
   border-radius: 5px;
 }
 
 ::selection {
-  background-color: #5E1EE5;
+  background-color: #5e1ee5;
   color: white;
   border-radius: 5px;
 }
@@ -79,7 +79,14 @@ nav .container .sing {
   max-height: calc(100vh - 60px);
   left: 0px;
   top: 30px;
-  background: linear-gradient(45deg, #212736, #5E1EE5, #5d17c4, #5E1EE5, #212736);
+  background: linear-gradient(
+    45deg,
+    #212736,
+    #5e1ee5,
+    #5d17c4,
+    #5e1ee5,
+    #212736
+  );
   padding: 20px;
   border-radius: 20px;
   display: flex;
@@ -98,8 +105,8 @@ nav .container .sing.show {
 }
 nav .container .sing button {
   padding: 10px 20px;
-  border: 1px solid #FFE921;
-  background-color: #FFE921;
+  border: 1px solid #ffe921;
+  background-color: #ffe921;
   color: white;
   border-radius: 10px;
   cursor: pointer;
@@ -132,7 +139,7 @@ nav .container .sing form input {
 nav .container .sing form input:focus {
   border: 2px solid #5d17c4;
 }
-nav .container .sing form input[type=file] {
+nav .container .sing form input[type="file"] {
   cursor: pointer;
   color: #5d17c4;
   width: 400px;
@@ -143,11 +150,11 @@ nav .container .sing form input[type=file] {
   font-size: 16px;
   transition: all 0.3s ease;
 }
-nav .container .sing form input[type=file]:hover {
+nav .container .sing form input[type="file"]:hover {
   border-color: #8c6cff;
   background: rgba(255, 255, 255, 0.12);
 }
-nav .container .sing form input[type=file]::file-selector-button {
+nav .container .sing form input[type="file"]::file-selector-button {
   cursor: pointer;
   border: none;
   padding: 10px 18px;
@@ -162,7 +169,7 @@ nav .container .sing form .avatar-preview {
   height: 90px;
   border-radius: 50%;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   border: 3px solid rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 18px rgba(0, 0, 0, 0.25);
   display: none;
@@ -182,10 +189,12 @@ nav .container h1 .dote {
   right: -5px;
   width: 20px;
   height: 20px;
-  background-color: #5E1EE5;
+  background-color: #5e1ee5;
   border-radius: 50%;
   z-index: -1;
-  animation: pulse 2s infinite, orbit 4s linear infinite;
+  animation:
+    pulse 2s infinite,
+    orbit 4s linear infinite;
 }
 @keyframes pulse {
   0% {
@@ -210,7 +219,7 @@ nav .container h1 .dote {
   }
 }
 nav .container .nav-link {
-  color: #8E8E8E;
+  color: #8e8e8e;
 }
 nav .container .nav-link li {
   position: relative;
@@ -218,13 +227,13 @@ nav .container .nav-link li {
   cursor: pointer;
 }
 nav .container .nav-link li:hover {
-  color: #5E1EE5;
+  color: #5e1ee5;
 }
 nav .container .nav-link li::after {
   content: "";
   position: absolute;
   transition: all 0.3s ease;
-  background-color: #5E1EE5;
+  background-color: #5e1ee5;
   width: 0;
   height: 2px;
   left: 50%;
@@ -233,6 +242,28 @@ nav .container .nav-link li::after {
 }
 nav .container .nav-link li:hover::after {
   width: 100%;
+}
+nav .container .nav-link li .nav-game-link {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #5d17c4, #ff0055);
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+}
+nav .container .nav-link li .nav-game-link:hover {
+  color: white;
+  background: linear-gradient(135deg, #ff0055, #5d17c4);
+  box-shadow:
+    0 0 25px rgba(255, 0, 85, 0.8),
+    0 0 35px rgba(93, 23, 196, 0.5);
+  transform: scale(1.05);
+}
+nav .container .nav-link li .nav-game-link::after {
+  display: none;
 }
 nav .container .nav-btn li.user-info {
   display: none;
@@ -260,12 +291,12 @@ nav .container .nav-btn .current-avatar {
   height: 100%;
   border-radius: 50%;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   display: none;
 }
 nav .container .nav-btn button:nth-of-type(1) {
   padding: 10px 20px;
-  border: 2px solid #5E1EE5;
+  border: 2px solid #5e1ee5;
   background-color: transparent;
   font-size: 15px;
   border-radius: 10px;
@@ -282,9 +313,10 @@ nav .container .nav-btn button:nth-of-type(1):hover {
 nav .container .nav-btn button:nth-of-type(1):active {
   transform: translateY(0);
 }
-nav .container .nav-btn button:nth-of-type(2), nav .container .nav-btn button.logout_btn {
+nav .container .nav-btn button:nth-of-type(2),
+nav .container .nav-btn button.logout_btn {
   padding: 10px 20px;
-  border: 2px solid #5E1EE5;
+  border: 2px solid #5e1ee5;
   background-color: transparent;
   font-size: 15px;
   border-radius: 10px;
@@ -295,21 +327,24 @@ nav .container .nav-btn button:nth-of-type(2), nav .container .nav-btn button.lo
   align-items: center;
   gap: 10px;
 }
-nav .container .nav-btn button:nth-of-type(2) .nav-avatar, nav .container .nav-btn button.logout_btn .nav-avatar {
+nav .container .nav-btn button:nth-of-type(2) .nav-avatar,
+nav .container .nav-btn button.logout_btn .nav-avatar {
   width: 22px;
   height: 22px;
   border-radius: 50%;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.6);
 }
-nav .container .nav-btn button:nth-of-type(2):hover, nav .container .nav-btn button.logout_btn:hover {
+nav .container .nav-btn button:nth-of-type(2):hover,
+nav .container .nav-btn button.logout_btn:hover {
   background-color: #5d17c4;
   color: #ffffff;
   box-shadow: 0 4px 15px rgba(93, 23, 196, 0.4);
   transform: translateY(-2px);
 }
-nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn button.logout_btn:active {
+nav .container .nav-btn button:nth-of-type(2):active,
+nav .container .nav-btn button.logout_btn:active {
   transform: translateY(0);
 }
 
@@ -388,7 +423,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   height: 60px;
   border-radius: 16px;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 
 .cart-item-info {
@@ -508,7 +543,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
 }
 .hero .container .hero_card2 .hero-info h2:nth-of-type(2) {
-  background-color: #FFE921;
+  background-color: #ffe921;
   border-radius: 10px;
   padding: 5px;
   color: black;
@@ -598,7 +633,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
 .two .container .two_title .move-btns button {
   padding: 10px 10px;
   border: 1px solid transparent;
-  background-color: #AFE638;
+  background-color: #afe638;
   border-radius: 50%;
   color: white;
   cursor: pointer;
@@ -606,8 +641,8 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
 }
 .two .container .two_title .move-btns button:hover {
   background-color: white;
-  color: #AFE638;
-  border: 1px solid #AFE638;
+  color: #afe638;
+  border: 1px solid #afe638;
 }
 .two .container .two_box {
   display: flex;
@@ -650,7 +685,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   width: 100%;
   height: 100%;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 .two .container .two_box .two_card .heart i {
   position: absolute;
@@ -690,7 +725,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   font-weight: 400;
 }
 .two .container .two_box .two_card .stars i {
-  color: #AFE638;
+  color: #afe638;
 }
 .two .container .two_box .two_card .stars {
   display: flex;
@@ -903,7 +938,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   color: #5d17c4;
 }
 .four .container .four_title i {
-  color: #AFE638;
+  color: #afe638;
   font-size: 30px;
   animation: star 5s linear infinite;
 }
@@ -946,7 +981,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   width: 300px;
   height: 200px;
   -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: contain;
   margin: 0 auto;
 }
 .four .container .four_box .four_card .card_top img:nth-of-type(1) {
@@ -973,7 +1008,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   }
 }
 .four .container .four_box .four_card .card_top h2 {
-  color: #0177FC;
+  color: #0177fc;
 }
 .four .container .four_box .four_card .four_info h2 {
   padding: 20px 0px;
@@ -988,7 +1023,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   padding: 10px 0px;
 }
 .four .container .four_box .four_card .four_info .four_stars i {
-  color: #AFE638;
+  color: #afe638;
 }
 .four .container .four_box .four_card .four_info button {
   padding: 10px 20px;
@@ -1044,10 +1079,12 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   left: 120px;
   width: 20px;
   height: 20px;
-  background-color: #5E1EE5;
+  background-color: #5e1ee5;
   border-radius: 50%;
   z-index: -1;
-  animation: pulse 2s infinite, orbit 4s linear infinite;
+  animation:
+    pulse 2s infinite,
+    orbit 4s linear infinite;
 }
 .fife .container .fife_box form {
   width: 400px;
@@ -1056,7 +1093,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   justify-content: center;
   flex-direction: column;
   border-radius: 10px;
-  background-color: #EFF0F1;
+  background-color: #eff0f1;
 }
 .fife .container .fife_box form input {
   width: 100%;
@@ -1070,7 +1107,7 @@ nav .container .nav-btn button:nth-of-type(2):active, nav .container .nav-btn bu
   padding: 10px 20px;
   border: none;
   outline: none;
-  background-color: #AFE638;
+  background-color: #afe638;
   color: white;
   border-radius: 10px;
   cursor: pointer;
@@ -1109,10 +1146,117 @@ footer .container .footer_card h1 .dote {
   left: 120px;
   width: 20px;
   height: 20px;
-  background-color: #5E1EE5;
+  background-color: #5e1ee5;
   border-radius: 50%;
   z-index: -1;
-  animation: pulse 2s infinite, orbit 4s linear infinite;
+  animation:
+    pulse 2s infinite,
+    orbit 4s linear infinite;
+}
+
+.game-promo {
+  background: linear-gradient(
+    135deg,
+    rgba(93, 23, 196, 0.3),
+    rgba(255, 0, 85, 0.1)
+  );
+  border-top: 2px solid #5d17c4;
+  border-bottom: 2px solid #afe638;
+  padding: 50px 0;
+  margin: 50px 0;
+  position: relative;
+  overflow: hidden;
+}
+.game-promo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+.game-promo .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+.game-promo .container h2 {
+  color: white;
+  font-size: 28px;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+  margin: 0;
+}
+.game-promo .container p {
+  color: #afe638;
+  font-size: 16px;
+  text-align: center;
+  margin: 0;
+}
+.game-promo .container .game-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 40px;
+  background: linear-gradient(135deg, #5d17c4, #ff0055);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 0 20px rgba(255, 0, 85, 0.5),
+    0 0 40px rgba(93, 23, 196, 0.3);
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.game-promo .container .game-link span {
+  letter-spacing: 1px;
+}
+.game-promo .container .game-link i {
+  font-size: 20px;
+  animation: bounce 1s infinite;
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.game-promo .container .game-link:hover {
+  background: linear-gradient(135deg, #ff0055, #5d17c4);
+  transform: scale(1.08);
+  box-shadow:
+    0 0 30px rgba(255, 0, 85, 0.8),
+    0 0 60px rgba(93, 23, 196, 0.6);
+  border: 2px solid #afe638;
+}
+.game-promo .container .game-link:active {
+  transform: scale(0.95);
 }
 
 @media (max-width: 700px) {
@@ -1154,10 +1298,12 @@ footer .container .footer_card h1 .dote {
     right: -5px;
     width: 20px;
     height: 20px;
-    background-color: #5E1EE5;
+    background-color: #5e1ee5;
     border-radius: 50%;
     z-index: -1;
-    animation: pulse 2s infinite, orbit 4s linear infinite;
+    animation:
+      pulse 2s infinite,
+      orbit 4s linear infinite;
   }
   @keyframes pulse {
     0% {
@@ -1182,7 +1328,7 @@ footer .container .footer_card h1 .dote {
     }
   }
   nav .container .nav-link {
-    color: #8E8E8E;
+    color: #8e8e8e;
   }
   nav .container .nav-link li {
     position: relative;
@@ -1190,13 +1336,13 @@ footer .container .footer_card h1 .dote {
     cursor: pointer;
   }
   nav .container .nav-link li:hover {
-    color: #5E1EE5;
+    color: #5e1ee5;
   }
   nav .container .nav-link li::after {
     content: "";
     position: absolute;
     transition: all 0.3s ease;
-    background-color: #5E1EE5;
+    background-color: #5e1ee5;
     width: 0;
     height: 2px;
     left: 50%;
@@ -1206,9 +1352,31 @@ footer .container .footer_card h1 .dote {
   nav .container .nav-link li:hover::after {
     width: 100%;
   }
+  nav .container .nav-link li .nav-game-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #5d17c4, #ff0055);
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+  }
+  nav .container .nav-link li .nav-game-link:hover {
+    color: white;
+    background: linear-gradient(135deg, #ff0055, #5d17c4);
+    box-shadow:
+      0 0 25px rgba(255, 0, 85, 0.8),
+      0 0 35px rgba(93, 23, 196, 0.5);
+    transform: scale(1.05);
+  }
+  nav .container .nav-link li .nav-game-link::after {
+    display: none;
+  }
   nav .container .nav-btn button:nth-of-type(1) {
     padding: 10px 20px;
-    border: 2px solid #5E1EE5;
+    border: 2px solid #5e1ee5;
     background-color: transparent;
     font-size: 15px;
     border-radius: 10px;
@@ -1227,7 +1395,7 @@ footer .container .footer_card h1 .dote {
   }
   nav .container .nav-btn button:nth-of-type(2) {
     padding: 10px 20px;
-    border: 2px solid #5E1EE5;
+    border: 2px solid #5e1ee5;
     background-color: transparent;
     font-size: 15px;
     border-radius: 10px;
@@ -1325,7 +1493,7 @@ footer .container .footer_card h1 .dote {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
   }
   .hero .container .hero_card2 .hero-info h2:nth-of-type(2) {
-    background-color: #FFE921;
+    background-color: #ffe921;
     border-radius: 10px;
     padding: 5px;
     color: black;
@@ -1415,7 +1583,7 @@ footer .container .footer_card h1 .dote {
   .two .container .two_title .move-btns button {
     padding: 10px 10px;
     border: 1px solid transparent;
-    background-color: #AFE638;
+    background-color: #afe638;
     border-radius: 50%;
     color: white;
     cursor: pointer;
@@ -1423,8 +1591,8 @@ footer .container .footer_card h1 .dote {
   }
   .two .container .two_title .move-btns button:hover {
     background-color: white;
-    color: #AFE638;
-    border: 1px solid #AFE638;
+    color: #afe638;
+    border: 1px solid #afe638;
   }
   .two .container .two_box {
     display: flex;
@@ -1467,7 +1635,7 @@ footer .container .footer_card h1 .dote {
     width: 100%;
     height: 100%;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
   }
   .two .container .two_box .two_card .heart i {
     position: absolute;
@@ -1507,7 +1675,7 @@ footer .container .footer_card h1 .dote {
     font-weight: 400;
   }
   .two .container .two_box .two_card .stars i {
-    color: #AFE638;
+    color: #afe638;
   }
   .two .container .two_box .two_card .stars {
     display: flex;
@@ -1719,7 +1887,7 @@ footer .container .footer_card h1 .dote {
     color: #5d17c4;
   }
   .four .container .four_title i {
-    color: #AFE638;
+    color: #afe638;
     font-size: 30px;
     animation: star 5s linear infinite;
     margin-right: 20px;
@@ -1765,7 +1933,7 @@ footer .container .footer_card h1 .dote {
     width: 300px;
     height: 200px;
     -o-object-fit: contain;
-       object-fit: contain;
+    object-fit: contain;
     margin: 0 auto;
   }
   .four .container .four_box .four_card .card_top img:nth-of-type(1) {
@@ -1792,7 +1960,7 @@ footer .container .footer_card h1 .dote {
     }
   }
   .four .container .four_box .four_card .card_top h2 {
-    color: #0177FC;
+    color: #0177fc;
   }
   .four .container .four_box .four_card .four_info h2 {
     padding: 20px 0px;
@@ -1807,7 +1975,7 @@ footer .container .footer_card h1 .dote {
     padding: 10px 0px;
   }
   .four .container .four_box .four_card .four_info .four_stars i {
-    color: #AFE638;
+    color: #afe638;
   }
   .four .container .four_box .four_card .four_info button {
     padding: 10px 20px;
@@ -1865,10 +2033,12 @@ footer .container .footer_card h1 .dote {
     left: 120px;
     width: 20px;
     height: 20px;
-    background-color: #5E1EE5;
+    background-color: #5e1ee5;
     border-radius: 50%;
     z-index: -1;
-    animation: pulse 2s infinite, orbit 4s linear infinite;
+    animation:
+      pulse 2s infinite,
+      orbit 4s linear infinite;
   }
   .fife .container .fife_box form {
     width: 100%;
@@ -1877,7 +2047,7 @@ footer .container .footer_card h1 .dote {
     justify-content: center;
     flex-direction: column;
     border-radius: 10px;
-    background-color: #EFF0F1;
+    background-color: #eff0f1;
   }
   .fife .container .fife_box form input {
     width: 100%;
@@ -1891,7 +2061,7 @@ footer .container .footer_card h1 .dote {
     padding: 10px 20px;
     border: none;
     outline: none;
-    background-color: #AFE638;
+    background-color: #afe638;
     color: white;
     border-radius: 10px;
     cursor: pointer;
@@ -1934,9 +2104,11 @@ footer .container .footer_card h1 .dote {
     left: 120px;
     width: 20px;
     height: 20px;
-    background-color: #5E1EE5;
+    background-color: #5e1ee5;
     border-radius: 50%;
     z-index: -1;
-    animation: pulse 2s infinite, orbit 4s linear infinite;
+    animation:
+      pulse 2s infinite,
+      orbit 4s linear infinite;
   }
-}/*# sourceMappingURL=main.css.map */
+} /*# sourceMappingURL=main.css.map */
