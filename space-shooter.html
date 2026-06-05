@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./SariqBoss.cs" />
     <title>👾 Space Shooter Game</title>
     <style>
       * {
@@ -216,6 +215,7 @@
       let score = 0;
       let level = 1;
       let enemySpawnRate = 25;
+      let ultimateBossChance = 0.2;
 
       // Player object
       const player = {
@@ -337,6 +337,28 @@
         }
       }
 
+      function spawnUltimateBoss() {
+        if (!gameRunning) return;
+
+        const size = 120;
+
+        bossEnemy = {
+          x: canvas.width / 2 - size / 2,
+          y: -size,
+          width: size,
+          height: size,
+          speed: 0.5,
+          health: 80,
+          maxHealth: 80,
+          isBoss: true,
+          type: "ultimate",
+          phase: 1,
+          attackTimer: 0,
+        };
+
+        bossShootTimer = 0;
+      }
+
       // Spawn enemies
       function spawnEnemy() {
         if (!gameRunning) return;
@@ -387,6 +409,29 @@
                 ]
               : [], // Sariq bossning yordamchi mini-dronlari
         };
+        bossShootTimer = 0;
+      }
+
+      function spawnUltimateBoss() {
+        if (!gameRunning) return;
+
+        const size = 120;
+
+        bossEnemy = {
+          x: canvas.width / 2 - size / 2,
+          y: -size,
+          width: size,
+          height: size,
+          speed: 0.5,
+          health: 80,
+          maxHealth: 80,
+          isBoss: true,
+          type: "ultimate",
+          phase: 1,
+          attackTimer: 0,
+          horizontalSpeed: 3,
+        };
+
         bossShootTimer = 0;
       }
 
@@ -821,8 +866,16 @@
 
         if (!bossEnemy) {
           bossSpawnTimer++;
+
           if (bossSpawnTimer >= 600) {
-            spawnBoss();
+            const r = Math.random();
+
+            if (r < ultimateBossChance) {
+              spawnUltimateBoss();
+            } else {
+              spawnBoss();
+            }
+
             bossSpawnTimer = 0;
           }
         }
@@ -949,6 +1002,92 @@
                   bossEnemy = null;
                   bossSpawnTimer = 0;
                   break;
+                }
+              }
+            }
+          }
+          if (bossEnemy.type === "ultimate") {
+            bossEnemy.y += bossEnemy.speed;
+
+            if (bossEnemy.y > 100) bossEnemy.speed = 0;
+
+            bossEnemy.attackTimer++;
+
+            // phase system
+            if (bossEnemy.health < 55) bossEnemy.phase = 2;
+            if (bossEnemy.health < 25) bossEnemy.phase = 3;
+
+            // harakat
+            bossEnemy.x += Math.sin(Date.now() / 250) * 2;
+
+            if (bossEnemy.attackTimer > 50) {
+              const cx = bossEnemy.x + bossEnemy.width / 2;
+              const cy = bossEnemy.y + bossEnemy.height;
+
+              if (bossEnemy.phase === 1) {
+                bossBullets.push({
+                  x: cx,
+                  y: cy,
+                  width: 10,
+                  height: 10,
+                  vx: 0,
+                  vy: 6,
+                });
+              }
+
+              if (bossEnemy.phase === 2) {
+                for (let i = -1; i <= 1; i++) {
+                  bossBullets.push({
+                    x: cx,
+                    y: cy,
+                    width: 10,
+                    height: 10,
+                    vx: i * 2,
+                    vy: 6,
+                  });
+                }
+              }
+
+              if (bossEnemy.phase === 3) {
+                for (let i = -3; i <= 3; i++) {
+                  bossBullets.push({
+                    x: cx + i * 15,
+                    y: cy,
+                    width: 8,
+                    height: 8,
+                    vx: 0,
+                    vy: 7,
+                  });
+                }
+              }
+
+              bossEnemy.attackTimer = 0;
+            }
+
+            // collision player
+            if (checkCollision(player, bossEnemy)) {
+              playerHit();
+            }
+
+            // bullet hit
+            for (let j = player.bullets.length - 1; j >= 0; j--) {
+              if (checkCollision(player.bullets[j], bossEnemy)) {
+                bossEnemy.health--;
+                player.bullets.splice(j, 1);
+
+                if (bossEnemy.health <= 0) {
+                  createExplosion(
+                    bossEnemy.x + 60,
+                    bossEnemy.y + 60,
+                    40,
+                    "#ff00ff",
+                  );
+
+                  score += 500;
+                  player.lives += 2;
+
+                  bossEnemy = null;
+                  bossSpawnTimer = 0;
                 }
               }
             }
@@ -1123,6 +1262,39 @@
 
       // Boss chizish tizimi (Qizil, Yashil va Sariq)
       function drawBoss(boss) {
+        if (boss.type === "ultimate") {
+          ctx.shadowColor = "#ff00ff";
+          ctx.shadowBlur = 40;
+
+          ctx.fillStyle = "#ff00ff";
+          ctx.beginPath();
+          ctx.arc(boss.x + 60, boss.y + 60, 55, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = "#000";
+          ctx.beginPath();
+          ctx.arc(boss.x + 60, boss.y + 60, 25, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = "#fff";
+          ctx.fillRect(boss.x + 40, boss.y + 40, 10, 10);
+          ctx.fillRect(boss.x + 70, boss.y + 40, 10, 10);
+
+          ctx.fillStyle = "red";
+          ctx.fillRect(boss.x, boss.y + 130, 120, 8);
+
+          ctx.fillStyle = "lime";
+          ctx.fillRect(
+            boss.x,
+            boss.y + 130,
+            120 * (boss.health / boss.maxHealth),
+            8,
+          );
+
+          ctx.shadowBlur = 0;
+          return;
+        }
+
         let bossColor = "#ff0033"; // Qizil standart
         if (boss.type === "green") bossColor = "#00ff88";
         if (boss.type === "yellow") bossColor = "#ffd700";
