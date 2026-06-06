@@ -174,15 +174,192 @@
       .back-btn:active {
         transform: translateY(0);
       }
+      /* Boss health control styles */
+      .boss-health-control {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 30;
+        color: #00ff88;
+        font-size: 14px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.35);
+        padding: 6px 10px;
+        border-radius: 18px;
+        border: 1px solid rgba(0, 255, 136, 0.12);
+        box-shadow:
+          0 6px 20px rgba(0, 0, 0, 0.4),
+          0 0 12px rgba(0, 255, 136, 0.06) inset;
+        backdrop-filter: blur(4px);
+      }
+      .boss-health-control.hidden {
+        display: none;
+      }
+      .boss-health-control label {
+        font-weight: bold;
+        color: #ffffffcc;
+        margin-right: 6px;
+      }
+      .boss-health-control input[type="range"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 220px;
+        height: 8px;
+        border-radius: 6px;
+        background: linear-gradient(
+          90deg,
+          #ff3300 0%,
+          #ffd700 50%,
+          #00ff88 100%
+        );
+        outline: none;
+        opacity: 0.95;
+      }
+      .boss-health-control input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+      }
+
+      .mobile-controls {
+        display: none;
+      }
+      .mobile-btn {
+        border: none;
+        border-radius: 14px;
+        background: rgba(0, 255, 136, 0.16);
+        color: #e9f9ff;
+        font-size: 16px;
+        font-weight: bold;
+        min-width: 70px;
+        min-height: 56px;
+        padding: 0 14px;
+        box-shadow: 0 5px 18px rgba(0, 255, 136, 0.18);
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          background 0.15s ease;
+        user-select: none;
+        touch-action: manipulation;
+      }
+      .mobile-btn:active,
+      .mobile-btn.active {
+        transform: scale(0.95);
+        background: rgba(0, 255, 136, 0.28);
+      }
+
+      @media (max-width: 768px) {
+        body {
+          min-height: 100vh;
+          padding: 10px;
+        }
+
+        .game-container {
+          width: min(100vw, 420px);
+          height: min(100vh - 24px, 560px);
+          border-width: 2px;
+        }
+
+        .ui {
+          top: 12px;
+          left: 12px;
+          font-size: 14px;
+        }
+
+        .back-btn {
+          top: 12px;
+          left: 12px;
+          padding: 8px 14px;
+          font-size: 12px;
+        }
+
+        .instructions {
+          bottom: 92px;
+          font-size: 11px;
+        }
+
+        .boss-health-control {
+          top: 58px;
+          width: calc(100% - 24px);
+          max-width: 380px;
+        }
+
+        .mobile-controls {
+          display: flex;
+          position: absolute;
+          bottom: 14px;
+          left: 50%;
+          transform: translateX(-50%);
+          gap: 10px;
+          z-index: 30;
+          justify-content: center;
+          align-items: center;
+          padding: 0 4px;
+        }
+
+        .mobile-btn {
+          min-width: 60px;
+          min-height: 56px;
+          font-size: 14px;
+        }
+      }
     </style>
   </head>
   <body>
     <a href="./index.html" class="back-btn">← Orqaga</a>
+    <div
+      id="bossHealthControl"
+      class="boss-health-control hidden"
+      aria-hidden="true"
+    >
+      <label for="bossHealthRange">Boss</label>
+      <input
+        id="bossHealthRange"
+        type="range"
+        min="1"
+        max="300"
+        step="1"
+        value="80"
+      />
+      <span id="bossHealthValue">80</span>
+    </div>
     <div class="game-container">
       <canvas id="gameCanvas"></canvas>
+      <div id="mobileControls" class="mobile-controls" aria-hidden="true">
+        <button
+          type="button"
+          class="mobile-btn mobile-left"
+          aria-label="Move left"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          class="mobile-btn mobile-shoot"
+          aria-label="Shoot"
+        >
+          SHOOT
+        </button>
+        <button
+          type="button"
+          class="mobile-btn mobile-right"
+          aria-label="Move right"
+        >
+          →
+        </button>
+      </div>
       <div class="ui">
         <div class="score">Score: <span id="score">0</span></div>
         <div class="level">Level: <span id="level">1</span></div>
+        <div class="record">Record: <span id="record">0</span></div>
         <div class="lives">Lives: <span id="lives">3</span></div>
         <div class="weapons">Weapon Level: <span id="weaponLvl">1x</span></div>
         <div class="helpers-count">
@@ -214,6 +391,7 @@
       let level = 1;
       let enemySpawnRate = 25;
       let ultimateBossChance = 0.2;
+      let record = 0;
 
       // Player object
       const player = {
@@ -263,6 +441,31 @@
       // Particles array for effects
       let particles = [];
 
+      // Boss health setting control (linked to range input)
+      const bossHealthControlElem =
+        document.getElementById("bossHealthControl");
+      const bossHealthRangeElem = document.getElementById("bossHealthRange");
+      const bossHealthValueElem = document.getElementById("bossHealthValue");
+      const recordElem = document.getElementById("record");
+      let bossHealthSetting = bossHealthRangeElem
+        ? parseInt(bossHealthRangeElem.value, 10)
+        : 80;
+      const storedRecord = localStorage.getItem("spaceShooterRecord");
+      record = storedRecord ? parseInt(storedRecord, 10) : 0;
+      if (recordElem) {
+        recordElem.textContent = record;
+      }
+      if (bossHealthRangeElem) {
+        bossHealthRangeElem.addEventListener("input", () => {
+          bossHealthSetting = parseInt(bossHealthRangeElem.value, 10);
+          bossHealthValueElem.textContent = bossHealthSetting;
+          if (bossEnemy) {
+            bossEnemy.maxHealth = bossHealthSetting;
+            bossEnemy.health = Math.min(bossEnemy.health, bossEnemy.maxHealth);
+          }
+        });
+      }
+
       // Keyboard state
       const keys = {};
 
@@ -281,6 +484,53 @@
       document.addEventListener("keyup", (e) => {
         keys[e.key] = false;
       });
+
+      const mobileLeftBtn = document.querySelector(".mobile-left");
+      const mobileRightBtn = document.querySelector(".mobile-right");
+      const mobileShootBtn = document.querySelector(".mobile-shoot");
+
+      function bindMobileControl(button, keyName) {
+        if (!button) return;
+        button.addEventListener(
+          "touchstart",
+          (event) => {
+            event.preventDefault();
+            keys[keyName] = true;
+            button.classList.add("active");
+          },
+          { passive: false },
+        );
+        button.addEventListener("touchend", (event) => {
+          event.preventDefault();
+          keys[keyName] = false;
+          button.classList.remove("active");
+        });
+        button.addEventListener("touchcancel", () => {
+          keys[keyName] = false;
+          button.classList.remove("active");
+        });
+      }
+
+      bindMobileControl(mobileLeftBtn, "ArrowLeft");
+      bindMobileControl(mobileRightBtn, "ArrowRight");
+      if (mobileShootBtn) {
+        mobileShootBtn.addEventListener(
+          "touchstart",
+          (event) => {
+            event.preventDefault();
+            mobileShootBtn.classList.add("active");
+            shoot();
+          },
+          { passive: false },
+        );
+        mobileShootBtn.addEventListener("touchend", (event) => {
+          event.preventDefault();
+          mobileShootBtn.classList.remove("active");
+        });
+        mobileShootBtn.addEventListener("touchcancel", () => {
+          mobileShootBtn.classList.remove("active");
+        });
+      }
 
       // Player hit function
       function playerHit() {
@@ -346,13 +596,25 @@
           width: size,
           height: size,
           speed: 0.5,
-          health: 80,
-          maxHealth: 80,
+          health: Math.round(bossHealthSetting * 1.5),
+          maxHealth: Math.round(bossHealthSetting * 1.5),
           isBoss: true,
           type: "ultimate",
           phase: 1,
           attackTimer: 0,
         };
+
+        // Show and initialize boss health control
+        if (bossHealthControlElem && bossHealthRangeElem) {
+          bossHealthControlElem.classList.remove("hidden");
+          bossHealthControlElem.setAttribute("aria-hidden", "false");
+          bossHealthRangeElem.max = Math.max(
+            1,
+            Math.round(bossEnemy.maxHealth),
+          );
+          bossHealthRangeElem.value = Math.max(0, Math.round(bossEnemy.health));
+          bossHealthValueElem.textContent = bossHealthRangeElem.value;
+        }
 
         bossShootTimer = 0;
       }
@@ -387,14 +649,19 @@
         const randomType =
           bossTypes[Math.floor(Math.random() * bossTypes.length)];
 
+        const baseHealth =
+          randomType === "yellow"
+            ? Math.round(bossHealthSetting * 1.2)
+            : bossHealthSetting;
+
         bossEnemy = {
           x: x,
           y: -size,
           width: size,
           height: size,
           speed: 0.8 + level * 0.05,
-          health: randomType === "yellow" ? 15 : 10, // Sariq boss biroz baquvvatrog'i
-          maxHealth: randomType === "yellow" ? 15 : 10,
+          health: baseHealth,
+          maxHealth: baseHealth,
           isBoss: true,
           type: randomType,
           horizontalSpeed: 2, // Yashil boss uchun o'ngga-chapga harakat tezligi
@@ -407,6 +674,18 @@
                 ]
               : [], // Sariq bossning yordamchi mini-dronlari
         };
+        // Show and initialize boss health control
+        if (bossHealthControlElem && bossHealthRangeElem) {
+          bossHealthControlElem.classList.remove("hidden");
+          bossHealthControlElem.setAttribute("aria-hidden", "false");
+          bossHealthRangeElem.max = Math.max(
+            1,
+            Math.round(bossEnemy.maxHealth),
+          );
+          bossHealthRangeElem.value = Math.max(0, Math.round(bossEnemy.health));
+          bossHealthValueElem.textContent = bossHealthRangeElem.value;
+        }
+
         bossShootTimer = 0;
       }
 
@@ -421,8 +700,8 @@
           width: size,
           height: size,
           speed: 0.5,
-          health: 80,
-          maxHealth: 80,
+          health: Math.round(bossHealthSetting * 1.5),
+          maxHealth: Math.round(bossHealthSetting * 1.5),
           isBoss: true,
           type: "ultimate",
           phase: 1,
@@ -639,7 +918,7 @@
             bossEnemy.y < player.y
           ) {
             bossEnemy.health -= 0.15;
-            if (bossEnemy.hp <= 0) {
+            if (bossEnemy.health <= 0) {
               // 1. Ko'p emas, atigi 20 ta xavfsiz zarracha yaratamiz (lag bermasligi uchun)
               createExplosion(
                 bossEnemy.x + bossEnemy.width / 2,
@@ -755,6 +1034,14 @@
             } else if (items[i].type === "bomb") {
               player.bombModeActive = true;
               player.bombModeTimer = 600;
+            } else if (items[i].type === "health") {
+              player.lives++;
+              createExplosion(
+                player.x + player.width / 2,
+                player.y + player.height / 2,
+                12,
+                "#00ff88",
+              );
             }
             items.splice(i, 1);
             continue;
@@ -853,6 +1140,15 @@
                       height: 25,
                       speed: 2,
                       type: "bomb",
+                    });
+                  } else if (rand >= 0.3 && rand < 0.4) {
+                    items.push({
+                      x: enemies[i].x + 12,
+                      y: enemies[i].y,
+                      width: 25,
+                      height: 25,
+                      speed: 2,
+                      type: "health",
                     });
                   }
                 }
@@ -1018,7 +1314,7 @@
               }
             }
           }
-          if (bossEnemy.type === "ultimate") {
+          if (bossEnemy && bossEnemy.type === "ultimate") {
             bossEnemy.y += bossEnemy.speed;
 
             if (bossEnemy.y > 100) bossEnemy.speed = 0;
@@ -1117,6 +1413,9 @@
 
         document.getElementById("score").textContent = score;
         document.getElementById("level").textContent = level;
+        if (recordElem) {
+          recordElem.textContent = record;
+        }
         document.getElementById("lives").textContent = player.lives;
         document.getElementById("weaponLvl").textContent =
           player.doubleShotLevel + "x";
@@ -1129,6 +1428,30 @@
         document.getElementById("modeStatus").textContent = statusText;
         document.getElementById("helpersLvl").textContent =
           drones.length + "/4";
+
+        // Update boss health UI: appear only when a boss exists and reflect current health
+        if (
+          bossHealthControlElem &&
+          bossHealthRangeElem &&
+          bossHealthValueElem
+        ) {
+          if (bossEnemy) {
+            bossHealthControlElem.classList.remove("hidden");
+            bossHealthControlElem.setAttribute("aria-hidden", "false");
+            bossHealthRangeElem.max = Math.max(
+              1,
+              Math.round(bossEnemy.maxHealth),
+            );
+            bossHealthRangeElem.value = Math.max(
+              0,
+              Math.round(bossEnemy.health),
+            );
+            bossHealthValueElem.textContent = bossHealthRangeElem.value;
+          } else {
+            bossHealthControlElem.classList.add("hidden");
+            bossHealthControlElem.setAttribute("aria-hidden", "true");
+          }
+        }
       }
 
       // Draw Screen
@@ -1372,6 +1695,11 @@
 
       function endGame() {
         gameRunning = false;
+        if (score > record) {
+          record = score;
+          localStorage.setItem("spaceShooterRecord", String(record));
+          if (recordElem) recordElem.textContent = record;
+        }
         document.getElementById("gameOverScreen").style.display = "block";
         document.getElementById("finalScore").textContent = score;
         document.getElementById("finalLevel").textContent = level;
