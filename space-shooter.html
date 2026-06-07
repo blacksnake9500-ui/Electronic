@@ -1,1299 +1,853 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>👾 Space Shooter Game</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>👾 Space Shooter Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0e27 0%, #16213e 100%);
+      font-family: "Arial", sans-serif;
+      overflow: hidden;
+    }
+
+    .game-container {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      background: linear-gradient(135deg, #0a0e27 0%, #16213e 100%);
+      border: 3px solid #00ff88;
+      /* box-shadow olib tashlandi */
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle,
+          rgba(0, 255, 136, 0.05) 1px,
+          transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    .ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: #00ff88;
+      font-size: 18px;
+      z-index: 10;
+    }
+
+    .score {
+      margin-bottom: 15px;
+    }
+
+    .level {
+      margin-bottom: 10px;
+    }
+
+    .lives {
+      margin-bottom: 10px;
+      color: #ff0055;
+      font-weight: bold;
+    }
+
+    .weapons {
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #ffd700;
+    }
+
+    .helpers-count {
+      font-size: 14px;
+      color: #00a2ff;
+      font-weight: bold;
+    }
+
+    .mode-status {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #ff3300;
+      font-weight: bold;
+    }
+
+    .game-over {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 40px;
+      border: 3px solid #ff0055;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 100;
+      display: none;
+      min-width: 300px;
+    }
+
+    .game-over h1 {
+      color: #ff0055;
+      margin-bottom: 20px;
+      font-size: 32px;
+      /* text-shadow olib tashlandi */
+    }
+
+    .game-over p {
+      color: #00ff88;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    .game-over button {
+      margin-top: 20px;
+      padding: 10px 30px;
+      background: #00ff88;
+      color: #0a0e27;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .game-over button:hover {
+      background: #ff0055;
+      color: white;
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.8);
+    }
+
+    .instructions {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00ff88;
+      font-size: 12px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #00ff88, #5d17c4);
+      color: #0a0e27;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 20;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(135deg, #5d17c4, #ff0055);
+      transform: translateY(-2px);
+      box-shadow:
+        0 0 25px rgba(255, 0, 85, 0.6),
+        0 0 15px rgba(0, 255, 136, 0.4);
+    }
+
+    .back-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Boss health control styles */
+    .boss-health-control {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      color: #00ff88;
+      font-size: 14px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 6px 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(0, 255, 136, 0.12);
+      box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 12px rgba(0, 255, 136, 0.06) inset;
+      backdrop-filter: blur(4px);
+    }
+
+    .boss-health-control.hidden {
+      display: none;
+    }
+
+    .boss-health-control label {
+      font-weight: bold;
+      color: #ffffffcc;
+      margin-right: 6px;
+    }
+
+    .boss-health-control input[type="range"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 220px;
+      height: 8px;
+      border-radius: 6px;
+      background: linear-gradient(90deg,
+          #ff3300 0%,
+          #ffd700 50%,
+          #00ff88 100%);
+      outline: none;
+      opacity: 0.95;
+    }
+
+    .boss-health-control input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+
+    .mobile-controls {
+      display: none;
+    }
+
+    .mobile-btn {
+      border: none;
+      border-radius: 14px;
+      background: rgba(0, 255, 136, 0.16);
+      color: #e9f9ff;
+      font-size: 16px;
+      font-weight: bold;
+      min-width: 70px;
+      min-height: 56px;
+      padding: 0 14px;
+      box-shadow: 0 5px 18px rgba(0, 255, 136, 0.18);
+      cursor: pointer;
+      transition:
+        transform 0.15s ease,
+        background 0.15s ease;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .mobile-btn:active,
+    .mobile-btn.active {
+      transform: scale(0.95);
+      background: rgba(0, 255, 136, 0.28);
+    }
+
+    @media (max-width: 768px) {
       body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         min-height: 100vh;
-        background: linear-gradient(135deg, #0a0e27 0%, #16213e 100%);
-        font-family: "Arial", sans-serif;
-        overflow: hidden;
+        padding: 10px;
       }
 
       .game-container {
-        position: relative;
-        width: 800px;
-        height: 600px;
-        background: linear-gradient(135deg, #0a0e27 0%, #16213e 100%);
-        border: 3px solid #00ff88;
-        /* box-shadow olib tashlandi */
-        overflow: hidden;
-      }
-
-      canvas {
-        display: block;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(
-          circle,
-          rgba(0, 255, 136, 0.05) 1px,
-          transparent 1px
-        );
-        background-size: 50px 50px;
+        width: min(100vw, 420px);
+        height: min(100vh - 24px, 560px);
+        border-width: 2px;
       }
 
       .ui {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        color: #00ff88;
-        font-size: 18px;
-        z-index: 10;
-      }
-
-      .score {
-        margin-bottom: 15px;
-      }
-
-      .level {
-        margin-bottom: 10px;
-      }
-
-      .lives {
-        margin-bottom: 10px;
-        color: #ff0055;
-        font-weight: bold;
-      }
-
-      .weapons {
-        margin-bottom: 5px;
+        top: 12px;
+        left: 12px;
         font-size: 14px;
-        color: #ffd700;
-      }
-
-      .helpers-count {
-        font-size: 14px;
-        color: #00a2ff;
-        font-weight: bold;
-      }
-
-      .mode-status {
-        margin-top: 5px;
-        font-size: 14px;
-        color: #ff3300;
-        font-weight: bold;
-      }
-
-      .game-over {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 40px;
-        border: 3px solid #ff0055;
-        border-radius: 10px;
-        text-align: center;
-        z-index: 100;
-        display: none;
-        min-width: 300px;
-      }
-
-      .game-over h1 {
-        color: #ff0055;
-        margin-bottom: 20px;
-        font-size: 32px;
-        /* text-shadow olib tashlandi */
-      }
-
-      .game-over p {
-        color: #00ff88;
-        margin: 10px 0;
-        font-size: 18px;
-      }
-
-      .game-over button {
-        margin-top: 20px;
-        padding: 10px 30px;
-        background: #00ff88;
-        color: #0a0e27;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .game-over button:hover {
-        background: #ff0055;
-        color: white;
-        box-shadow: 0 0 20px rgba(255, 0, 85, 0.8);
-      }
-
-      .instructions {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: #00ff88;
-        font-size: 12px;
-        text-align: center;
-        z-index: 10;
       }
 
       .back-btn {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        padding: 10px 20px;
-        background: linear-gradient(135deg, #00ff88, #5d17c4);
-        color: #0a0e27;
-        border: none;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        z-index: 20;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
-      }
-
-      .back-btn:hover {
-        background: linear-gradient(135deg, #5d17c4, #ff0055);
-        transform: translateY(-2px);
-        box-shadow:
-          0 0 25px rgba(255, 0, 85, 0.6),
-          0 0 15px rgba(0, 255, 136, 0.4);
-      }
-
-      .back-btn:active {
-        transform: translateY(0);
-      }
-      /* Boss health control styles */
-      .boss-health-control {
-        position: absolute;
         top: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 30;
-        color: #00ff88;
-        font-size: 14px;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.35);
-        padding: 6px 10px;
-        border-radius: 18px;
-        border: 1px solid rgba(0, 255, 136, 0.12);
-        box-shadow:
-          0 6px 20px rgba(0, 0, 0, 0.4),
-          0 0 12px rgba(0, 255, 136, 0.06) inset;
-        backdrop-filter: blur(4px);
+        left: 12px;
+        padding: 8px 14px;
+        font-size: 12px;
       }
-      .boss-health-control.hidden {
-        display: none;
+
+      .instructions {
+        bottom: 92px;
+        font-size: 11px;
       }
-      .boss-health-control label {
-        font-weight: bold;
-        color: #ffffffcc;
-        margin-right: 6px;
-      }
-      .boss-health-control input[type="range"] {
-        appearance: none;
-        -webkit-appearance: none;
-        width: 220px;
-        height: 8px;
-        border-radius: 6px;
-        background: linear-gradient(
-          90deg,
-          #ff3300 0%,
-          #ffd700 50%,
-          #00ff88 100%
-        );
-        outline: none;
-        opacity: 0.95;
-      }
-      .boss-health-control input[type="range"]::-webkit-slider-thumb {
-        appearance: none;
-        -webkit-appearance: none;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: #fff;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-        cursor: pointer;
+
+      .boss-health-control {
+        top: 58px;
+        width: calc(100% - 24px);
+        max-width: 380px;
       }
 
       .mobile-controls {
-        display: none;
+        display: flex;
+        position: absolute;
+        bottom: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 10px;
+        z-index: 30;
+        justify-content: center;
+        align-items: center;
+        padding: 0 4px;
       }
+
       .mobile-btn {
-        border: none;
-        border-radius: 14px;
-        background: rgba(0, 255, 136, 0.16);
-        color: #e9f9ff;
-        font-size: 16px;
-        font-weight: bold;
-        min-width: 70px;
+        min-width: 60px;
         min-height: 56px;
-        padding: 0 14px;
-        box-shadow: 0 5px 18px rgba(0, 255, 136, 0.18);
-        cursor: pointer;
-        transition:
-          transform 0.15s ease,
-          background 0.15s ease;
-        user-select: none;
-        touch-action: manipulation;
+        font-size: 14px;
       }
-      .mobile-btn:active,
-      .mobile-btn.active {
-        transform: scale(0.95);
-        background: rgba(0, 255, 136, 0.28);
-      }
+    }
+  </style>
+</head>
 
-      @media (max-width: 768px) {
-        body {
-          min-height: 100vh;
-          padding: 10px;
-        }
-
-        .game-container {
-          width: min(100vw, 420px);
-          height: min(100vh - 24px, 560px);
-          border-width: 2px;
-        }
-
-        .ui {
-          top: 12px;
-          left: 12px;
-          font-size: 14px;
-        }
-
-        .back-btn {
-          top: 12px;
-          left: 12px;
-          padding: 8px 14px;
-          font-size: 12px;
-        }
-
-        .instructions {
-          bottom: 92px;
-          font-size: 11px;
-        }
-
-        .boss-health-control {
-          top: 58px;
-          width: calc(100% - 24px);
-          max-width: 380px;
-        }
-
-        .mobile-controls {
-          display: flex;
-          position: absolute;
-          bottom: 14px;
-          left: 50%;
-          transform: translateX(-50%);
-          gap: 10px;
-          z-index: 30;
-          justify-content: center;
-          align-items: center;
-          padding: 0 4px;
-        }
-
-        .mobile-btn {
-          min-width: 60px;
-          min-height: 56px;
-          font-size: 14px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <a href="./index.html" class="back-btn">← Orqaga</a>
-    <div
-      id="bossHealthControl"
-      class="boss-health-control hidden"
-      aria-hidden="true"
-    >
-      <label for="bossHealthRange">Boss</label>
-      <input
-        id="bossHealthRange"
-        type="range"
-        min="1"
-        max="300"
-        step="1"
-        value="80"
-      />
-      <span id="bossHealthValue">80</span>
+<body>
+  <a href="./index.html" class="back-btn">← Orqaga</a>
+  <div id="bossHealthControl" class="boss-health-control hidden" aria-hidden="true">
+    <label for="bossHealthRange">Boss</label>
+    <input id="bossHealthRange" type="range" min="1" max="300" step="1" value="80" />
+    <span id="bossHealthValue">80</span>
+  </div>
+  <div class="game-container">
+    <canvas id="gameCanvas"></canvas>
+    <div id="mobileControls" class="mobile-controls" aria-hidden="true">
+      <button type="button" class="mobile-btn mobile-left" aria-label="Move left">
+        ←
+      </button>
+      <button type="button" class="mobile-btn mobile-shoot" aria-label="Shoot">
+        SHOOT
+      </button>
+      <button type="button" class="mobile-btn mobile-right" aria-label="Move right">
+        →
+      </button>
     </div>
-    <div class="game-container">
-      <canvas id="gameCanvas"></canvas>
-      <div id="mobileControls" class="mobile-controls" aria-hidden="true">
-        <button
-          type="button"
-          class="mobile-btn mobile-left"
-          aria-label="Move left"
-        >
-          ←
-        </button>
-        <button
-          type="button"
-          class="mobile-btn mobile-shoot"
-          aria-label="Shoot"
-        >
-          SHOOT
-        </button>
-        <button
-          type="button"
-          class="mobile-btn mobile-right"
-          aria-label="Move right"
-        >
-          →
-        </button>
+    <div class="ui">
+      <div class="score">Score: <span id="score">0</span></div>
+      <div class="level">Level: <span id="level">1</span></div>
+      <div class="record">Record: <span id="record">0</span></div>
+      <div class="lives">Lives: <span id="lives">3</span></div>
+      <div class="weapons">Weapon Level: <span id="weaponLvl">1x</span></div>
+      <div class="helpers-count">
+        Helpers: <span id="helpersLvl">0/4</span>
       </div>
-      <div class="ui">
-        <div class="score">Score: <span id="score">0</span></div>
-        <div class="level">Level: <span id="level">1</span></div>
-        <div class="record">Record: <span id="record">0</span></div>
-        <div class="lives">Lives: <span id="lives">3</span></div>
-        <div class="weapons">Weapon Level: <span id="weaponLvl">1x</span></div>
-        <div class="helpers-count">
-          Helpers: <span id="helpersLvl">0/4</span>
-        </div>
-        <div class="mode-status" id="modeStatus"></div>
-      </div>
-      <div class="game-over" id="gameOverScreen">
-        <h1>GAME OVER</h1>
-        <p>Final Score: <span id="finalScore">0</span></p>
-        <p>Level Reached: <span id="finalLevel">1</span></p>
-        <button onclick="location.reload()">Play Again</button>
-      </div>
-      <div class="instructions">
-        <p>← → Move | SPACE Shoot | ESC Quit</p>
-      </div>
+      <div class="mode-status" id="modeStatus"></div>
     </div>
+    <div class="game-over" id="gameOverScreen">
+      <h1>GAME OVER</h1>
+      <p>Final Score: <span id="finalScore">0</span></p>
+      <p>Level Reached: <span id="finalLevel">1</span></p>
+      <button onclick="location.reload()">Play Again</button>
+    </div>
+    <div class="instructions">
+      <p>← → Move | SPACE Shoot | ESC Quit</p>
+    </div>
+  </div>
 
-    <script>
-      const canvas = document.getElementById("gameCanvas");
-      const ctx = canvas.getContext("2d");
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-      canvas.width = 800;
-      canvas.height = 600;
+    canvas.width = 800;
+    canvas.height = 600;
 
-      // Game variables
-      let gameRunning = true;
-      let score = 0;
-      let level = 1;
-      let enemySpawnRate = 25;
-      let ultimateBossChance = 0.2;
-      let record = 0;
+    // Game variables
+    let gameRunning = true;
+    let score = 0;
+    let level = 1;
+    let enemySpawnRate = 25;
+    let ultimateBossChance = 0.2;
+    let record = 0;
 
-      // Player object
-      const player = {
-        x: canvas.width / 2,
-        y: canvas.height - 50,
-        width: 40,
-        height: 40,
-        speed: 6,
-        dx: 0,
-        bullets: [],
-        doubleShotLevel: 1,
-        lives: 3,
-        isFrozen: false,
-        freezeTimer: 0,
-        laserActive: false,
-        laserTimer: 0,
-        bombModeActive: false,
-        bombModeTimer: 0,
+    // Player object
+    const player = {
+      x: canvas.width / 2,
+      y: canvas.height - 50,
+      width: 40,
+      height: 40,
+      speed: 6,
+      dx: 0,
+      bullets: [],
+      doubleShotLevel: 1,
+      lives: 3,
+      isFrozen: false,
+      freezeTimer: 0,
+      laserActive: false,
+      laserTimer: 0,
+      bombModeActive: false,
+      bombModeTimer: 0,
+      shieldActive: false,
+      shieldTimer: 0,
+      shotFlashTimer: 0,
+    };
+
+    // Helper Drones list
+    let drones = [];
+    const maxDrones = 4;
+    const droneWidth = 15;
+    const droneHeight = 15;
+    let droneShootTimer = 0;
+
+    const droneOffsets = [
+      { x: -25, y: 15 },
+      { x: 50, y: 15 },
+      { x: -45, y: 25 },
+      { x: 70, y: 25 },
+    ];
+
+    // Game arrays
+    let enemies = [];
+    let items = [];
+    let bossBullets = [];
+    let bombs = [];
+
+    // Boss enemy
+    let bossEnemy = null;
+    let bossSpawnTimer = 0;
+    let bossShootTimer = 0;
+    let bossAngle = 0; // Sariq boss dronlari aylanishi uchun burchak
+
+    // Particles array for effects
+    let particles = [];
+
+    // Boss health setting control (linked to range input)
+    const bossHealthControlElem =
+      document.getElementById("bossHealthControl");
+    const bossHealthRangeElem = document.getElementById("bossHealthRange");
+    const bossHealthValueElem = document.getElementById("bossHealthValue");
+    const recordElem = document.getElementById("record");
+    let bossHealthSetting = bossHealthRangeElem
+      ? parseInt(bossHealthRangeElem.value, 10)
+      : 80;
+    const storedRecord = localStorage.getItem("spaceShooterRecord");
+    record = storedRecord ? parseInt(storedRecord, 10) : 0;
+    if (recordElem) {
+      recordElem.textContent = record;
+    }
+    if (bossHealthRangeElem) {
+      bossHealthRangeElem.addEventListener("input", () => {
+        bossHealthSetting = parseInt(bossHealthRangeElem.value, 10);
+        bossHealthValueElem.textContent = bossHealthSetting;
+        if (bossEnemy) {
+          bossEnemy.maxHealth = bossHealthSetting;
+          bossEnemy.health = Math.min(bossEnemy.health, bossEnemy.maxHealth);
+        }
+      });
+    }
+
+    // Keyboard state
+    const keys = {};
+
+    // Event listeners
+    document.addEventListener("keydown", (e) => {
+      keys[e.key] = true;
+      if (e.key === " ") {
+        e.preventDefault();
+        shoot();
+      }
+      if (e.key === "Escape") {
+        endGame();
+      }
+    });
+
+    document.addEventListener("keyup", (e) => {
+      keys[e.key] = false;
+    });
+
+    const mobileLeftBtn = document.querySelector(".mobile-left");
+    const mobileRightBtn = document.querySelector(".mobile-right");
+    const mobileShootBtn = document.querySelector(".mobile-shoot");
+
+    function bindMobileControl(button, keyName) {
+      if (!button) return;
+      button.addEventListener(
+        "touchstart",
+        (event) => {
+          event.preventDefault();
+          keys[keyName] = true;
+          button.classList.add("active");
+        },
+        { passive: false },
+      );
+      button.addEventListener("touchend", (event) => {
+        event.preventDefault();
+        keys[keyName] = false;
+        button.classList.remove("active");
+      });
+      button.addEventListener("touchcancel", () => {
+        keys[keyName] = false;
+        button.classList.remove("active");
+      });
+    }
+
+    bindMobileControl(mobileLeftBtn, "ArrowLeft");
+    bindMobileControl(mobileRightBtn, "ArrowRight");
+    if (mobileShootBtn) {
+      mobileShootBtn.addEventListener(
+        "touchstart",
+        (event) => {
+          event.preventDefault();
+          mobileShootBtn.classList.add("active");
+          shoot();
+        },
+        { passive: false },
+      );
+      mobileShootBtn.addEventListener("touchend", (event) => {
+        event.preventDefault();
+        mobileShootBtn.classList.remove("active");
+      });
+      mobileShootBtn.addEventListener("touchcancel", () => {
+        mobileShootBtn.classList.remove("active");
+      });
+    }
+
+    // Player hit function
+    function playerHit() {
+      if (player.shieldActive) {
+        createExplosion(
+          player.x + player.width / 2,
+          player.y + player.height / 2,
+          20,
+          "#00ffff",
+        );
+        return;
+      }
+
+      player.lives--;
+
+      if (drones.length > 0) {
+        const removedDrone = drones.pop();
+        createExplosion(
+          player.x + player.width / 2,
+          player.y + player.height / 2,
+          20,
+          "#ff3300",
+        );
+      }
+
+      if (player.lives <= 0) {
+        endGame();
+      }
+    }
+
+    function activateShield() {
+      player.shieldActive = true;
+      player.shieldTimer = 300; // about 5 seconds at 60 FPS
+    }
+
+    // Player shoot
+    function shoot() {
+      if (!gameRunning || player.isFrozen || player.laserActive) return;
+
+      if (player.bombModeActive) {
+        bombs.push({
+          x: player.x + player.width / 2 - 10,
+          y: player.y - 10,
+          width: 20,
+          height: 20,
+          speed: 8,
+        });
+      } else {
+        const bulletWidth = 10;
+        const bulletHeight = 20;
+        const bulletSpeed = 20;
+
+        const spread = 15;
+        const totalWidth = (player.doubleShotLevel - 1) * spread;
+        const startX =
+          player.x + player.width / 2 - totalWidth / 2 - bulletWidth / 2;
+
+        for (let i = 0; i < player.doubleShotLevel; i++) {
+          player.bullets.push({
+            x: startX + i * spread,
+            y: player.y,
+            width: bulletWidth,
+            height: bulletHeight,
+            speed: bulletSpeed,
+          });
+        }
+      }
+    }
+
+    function spawnUltimateBoss() {
+      if (!gameRunning) return;
+
+      const size = window.matchMedia("(max-width: 768px)").matches ? 100 : 120;
+
+      bossEnemy = {
+        x: canvas.width / 2 - size / 2,
+        y: -size,
+        width: size,
+        height: size,
+        speed: 0.5,
+        health: Math.round(bossHealthSetting * 1.5),
+        maxHealth: Math.round(bossHealthSetting * 1.5),
+        isBoss: true,
+        type: "ultimate",
+        phase: 1,
+        attackTimer: 0,
+        horizontalSpeed: 3,
       };
 
-      // Helper Drones list
-      let drones = [];
-      const maxDrones = 4;
-      const droneWidth = 15;
-      const droneHeight = 15;
-      let droneShootTimer = 0;
-
-      const droneOffsets = [
-        { x: -25, y: 15 },
-        { x: 50, y: 15 },
-        { x: -45, y: 25 },
-        { x: 70, y: 25 },
-      ];
-
-      // Game arrays
-      let enemies = [];
-      let items = [];
-      let bossBullets = [];
-      let bombs = [];
-
-      // Boss enemy
-      let bossEnemy = null;
-      let bossSpawnTimer = 0;
-      let bossShootTimer = 0;
-      let bossAngle = 0; // Sariq boss dronlari aylanishi uchun burchak
-
-      // Particles array for effects
-      let particles = [];
-
-      // Boss health setting control (linked to range input)
-      const bossHealthControlElem =
-        document.getElementById("bossHealthControl");
-      const bossHealthRangeElem = document.getElementById("bossHealthRange");
-      const bossHealthValueElem = document.getElementById("bossHealthValue");
-      const recordElem = document.getElementById("record");
-      let bossHealthSetting = bossHealthRangeElem
-        ? parseInt(bossHealthRangeElem.value, 10)
-        : 80;
-      const storedRecord = localStorage.getItem("spaceShooterRecord");
-      record = storedRecord ? parseInt(storedRecord, 10) : 0;
-      if (recordElem) {
-        recordElem.textContent = record;
-      }
-      if (bossHealthRangeElem) {
-        bossHealthRangeElem.addEventListener("input", () => {
-          bossHealthSetting = parseInt(bossHealthRangeElem.value, 10);
-          bossHealthValueElem.textContent = bossHealthSetting;
-          if (bossEnemy) {
-            bossEnemy.maxHealth = bossHealthSetting;
-            bossEnemy.health = Math.min(bossEnemy.health, bossEnemy.maxHealth);
-          }
-        });
-      }
-
-      // Keyboard state
-      const keys = {};
-
-      // Event listeners
-      document.addEventListener("keydown", (e) => {
-        keys[e.key] = true;
-        if (e.key === " ") {
-          e.preventDefault();
-          shoot();
-        }
-        if (e.key === "Escape") {
-          endGame();
-        }
-      });
-
-      document.addEventListener("keyup", (e) => {
-        keys[e.key] = false;
-      });
-
-      const mobileLeftBtn = document.querySelector(".mobile-left");
-      const mobileRightBtn = document.querySelector(".mobile-right");
-      const mobileShootBtn = document.querySelector(".mobile-shoot");
-
-      function bindMobileControl(button, keyName) {
-        if (!button) return;
-        button.addEventListener(
-          "touchstart",
-          (event) => {
-            event.preventDefault();
-            keys[keyName] = true;
-            button.classList.add("active");
-          },
-          { passive: false },
+      // Show and initialize boss health control
+      if (bossHealthControlElem && bossHealthRangeElem) {
+        bossHealthControlElem.classList.remove("hidden");
+        bossHealthControlElem.setAttribute("aria-hidden", "false");
+        bossHealthRangeElem.max = Math.max(
+          1,
+          Math.round(bossEnemy.maxHealth),
         );
-        button.addEventListener("touchend", (event) => {
-          event.preventDefault();
-          keys[keyName] = false;
-          button.classList.remove("active");
-        });
-        button.addEventListener("touchcancel", () => {
-          keys[keyName] = false;
-          button.classList.remove("active");
-        });
+        bossHealthRangeElem.value = Math.max(0, Math.round(bossEnemy.health));
+        bossHealthValueElem.textContent = bossHealthRangeElem.value;
       }
 
-      bindMobileControl(mobileLeftBtn, "ArrowLeft");
-      bindMobileControl(mobileRightBtn, "ArrowRight");
-      if (mobileShootBtn) {
-        mobileShootBtn.addEventListener(
-          "touchstart",
-          (event) => {
-            event.preventDefault();
-            mobileShootBtn.classList.add("active");
-            shoot();
-          },
-          { passive: false },
-        );
-        mobileShootBtn.addEventListener("touchend", (event) => {
-          event.preventDefault();
-          mobileShootBtn.classList.remove("active");
-        });
-        mobileShootBtn.addEventListener("touchcancel", () => {
-          mobileShootBtn.classList.remove("active");
-        });
-      }
+      bossShootTimer = 0;
+    }
 
-      // Player hit function
-      function playerHit() {
-        player.lives--;
+    // Spawn enemies
+    function spawnEnemy() {
+      if (!gameRunning) return;
+      const size = window.matchMedia("(max-width: 768px)").matches ? 40 : 50;
+      const x = Math.random() * (canvas.width - size);
+      const isMinusEnemy = Math.random() < 0.2;
 
-        if (drones.length > 0) {
-          const removedDrone = drones.pop();
-          createExplosion(
-            player.x + player.width / 2,
-            player.y + player.height / 2,
-            20,
-            "#ff3300",
-          );
-        }
+      enemies.push({
+        x: x,
+        y: -size,
+        width: size,
+        height: size,
+        speed: 1 + level * 0.15,
+        health: 1,
+        isBoss: false,
+        isMinus: isMinusEnemy,
+      });
+    }
 
-        if (player.lives <= 0) {
-          endGame();
-        }
-      }
+    // Spawn random boss enemy
+    function spawnBoss() {
+      if (!gameRunning) return;
+      const size = window.matchMedia("(max-width: 768px)").matches ? 55 : 70;
+      const x = Math.random() * (canvas.width - size);
 
-      // Player shoot
-      function shoot() {
-        if (!gameRunning || player.isFrozen || player.laserActive) return;
+      // 3 ta turdagi bosslardan birini tasodifiy tanlash: 'red', 'green', 'yellow'
+      const bossTypes = ["red", "green", "yellow"];
+      const randomType =
+        bossTypes[Math.floor(Math.random() * bossTypes.length)];
 
-        if (player.bombModeActive) {
-          bombs.push({
-            x: player.x + player.width / 2 - 10,
-            y: player.y - 10,
-            width: 20,
-            height: 20,
-            speed: 8,
-          });
-        } else {
-          const bulletWidth = 10;
-          const bulletHeight = 20;
-          const bulletSpeed = 20;
+      const baseHealth =
+        randomType === "yellow"
+          ? Math.round(bossHealthSetting * 1.2)
+          : bossHealthSetting;
 
-          const spread = 15;
-          const totalWidth = (player.doubleShotLevel - 1) * spread;
-          const startX =
-            player.x + player.width / 2 - totalWidth / 2 - bulletWidth / 2;
-
-          for (let i = 0; i < player.doubleShotLevel; i++) {
-            player.bullets.push({
-              x: startX + i * spread,
-              y: player.y,
-              width: bulletWidth,
-              height: bulletHeight,
-              speed: bulletSpeed,
-            });
-          }
-        }
-      }
-
-      function spawnUltimateBoss() {
-        if (!gameRunning) return;
-
-        const size = 120;
-
-        bossEnemy = {
-          x: canvas.width / 2 - size / 2,
-          y: -size,
-          width: size,
-          height: size,
-          speed: 0.5,
-          health: Math.round(bossHealthSetting * 1.5),
-          maxHealth: Math.round(bossHealthSetting * 1.5),
-          isBoss: true,
-          type: "ultimate",
-          phase: 1,
-          attackTimer: 0,
-        };
-
-        // Show and initialize boss health control
-        if (bossHealthControlElem && bossHealthRangeElem) {
-          bossHealthControlElem.classList.remove("hidden");
-          bossHealthControlElem.setAttribute("aria-hidden", "false");
-          bossHealthRangeElem.max = Math.max(
-            1,
-            Math.round(bossEnemy.maxHealth),
-          );
-          bossHealthRangeElem.value = Math.max(0, Math.round(bossEnemy.health));
-          bossHealthValueElem.textContent = bossHealthRangeElem.value;
-        }
-
-        bossShootTimer = 0;
-      }
-
-      // Spawn enemies
-      function spawnEnemy() {
-        if (!gameRunning) return;
-        const size = 50;
-        const x = Math.random() * (canvas.width - size);
-        const isMinusEnemy = Math.random() < 0.2;
-
-        enemies.push({
-          x: x,
-          y: -size,
-          width: size,
-          height: size,
-          speed: 1 + level * 0.15,
-          health: 1,
-          isBoss: false,
-          isMinus: isMinusEnemy,
-        });
-      }
-
-      // Spawn random boss enemy
-      function spawnBoss() {
-        if (!gameRunning) return;
-        const size = 70;
-        const x = Math.random() * (canvas.width - size);
-
-        // 3 ta turdagi bosslardan birini tasodifiy tanlash: 'red', 'green', 'yellow'
-        const bossTypes = ["red", "green", "yellow"];
-        const randomType =
-          bossTypes[Math.floor(Math.random() * bossTypes.length)];
-
-        const baseHealth =
+      bossEnemy = {
+        x: x,
+        y: -size,
+        width: size,
+        height: size,
+        speed: 0.8 + level * 0.05,
+        health: baseHealth,
+        maxHealth: baseHealth,
+        isBoss: true,
+        type: randomType,
+        horizontalSpeed: 2, // Yashil boss uchun o'ngga-chapga harakat tezligi
+        minions:
           randomType === "yellow"
-            ? Math.round(bossHealthSetting * 1.2)
-            : bossHealthSetting;
+            ? [
+              { angle: 0, health: 2 },
+              { angle: (Math.PI * 2) / 3, health: 2 },
+              { angle: (Math.PI * 4) / 3, health: 2 },
+            ]
+            : [], // Sariq bossning yordamchi mini-dronlari
+      };
+      // Show and initialize boss health control
+      if (bossHealthControlElem && bossHealthRangeElem) {
+        bossHealthControlElem.classList.remove("hidden");
+        bossHealthControlElem.setAttribute("aria-hidden", "false");
+        bossHealthRangeElem.max = Math.max(
+          1,
+          Math.round(bossEnemy.maxHealth),
+        );
+        bossHealthRangeElem.value = Math.max(0, Math.round(bossEnemy.health));
+        bossHealthValueElem.textContent = bossHealthRangeElem.value;
+      }
 
-        bossEnemy = {
+      bossShootTimer = 0;
+    }
+
+    // Create particles
+    function createExplosion(x, y, count = 8, color = "#ff0055") {
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        particles.push({
           x: x,
-          y: -size,
-          width: size,
-          height: size,
-          speed: 0.8 + level * 0.05,
-          health: baseHealth,
-          maxHealth: baseHealth,
-          isBoss: true,
-          type: randomType,
-          horizontalSpeed: 2, // Yashil boss uchun o'ngga-chapga harakat tezligi
-          minions:
-            randomType === "yellow"
-              ? [
-                  { angle: 0, health: 2 },
-                  { angle: (Math.PI * 2) / 3, health: 2 },
-                  { angle: (Math.PI * 4) / 3, health: 2 },
-                ]
-              : [], // Sariq bossning yordamchi mini-dronlari
-        };
-        // Show and initialize boss health control
-        if (bossHealthControlElem && bossHealthRangeElem) {
-          bossHealthControlElem.classList.remove("hidden");
-          bossHealthControlElem.setAttribute("aria-hidden", "false");
-          bossHealthRangeElem.max = Math.max(
-            1,
-            Math.round(bossEnemy.maxHealth),
-          );
-          bossHealthRangeElem.value = Math.max(0, Math.round(bossEnemy.health));
-          bossHealthValueElem.textContent = bossHealthRangeElem.value;
-        }
-
-        bossShootTimer = 0;
-      }
-
-      function spawnUltimateBoss() {
-        if (!gameRunning) return;
-
-        const size = 120;
-
-        bossEnemy = {
-          x: canvas.width / 2 - size / 2,
-          y: -size,
-          width: size,
-          height: size,
-          speed: 0.5,
-          health: Math.round(bossHealthSetting * 1.5),
-          maxHealth: Math.round(bossHealthSetting * 1.5),
-          isBoss: true,
-          type: "ultimate",
-          phase: 1,
-          attackTimer: 0,
-          horizontalSpeed: 3,
-        };
-
-        bossShootTimer = 0;
-      }
-
-      // Create particles
-      function createExplosion(x, y, count = 8, color = "#ff0055") {
-        for (let i = 0; i < count; i++) {
-          const angle = (i / count) * Math.PI * 2;
-          particles.push({
-            x: x,
-            y: y,
-            vx: Math.cos(angle) * (Math.random() * 3 + 2),
-            vy: Math.sin(angle) * (Math.random() * 3 + 2),
-            life: 30,
-            maxLife: 30,
-            color: color,
-          });
-        }
-      }
-
-      // Update game state
-      function update() {
-        if (!gameRunning) return;
-
-        if (player.isFrozen) {
-          player.freezeTimer--;
-          if (player.freezeTimer <= 0) {
-            player.isFrozen = false;
-          }
-        }
-
-        if (player.laserActive) {
-          player.laserTimer--;
-          if (player.laserTimer <= 0) {
-            player.laserActive = false;
-          }
-        }
-
-        if (player.bombModeActive) {
-          player.bombModeTimer--;
-          if (player.bombModeTimer <= 0) {
-            player.bombModeActive = false;
-          }
-        }
-
-        player.dx = 0;
-        if (!player.isFrozen) {
-          if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
-          if (keys["ArrowRight"] && player.x < canvas.width - player.width)
-            player.x += player.speed;
-        }
-
-        if (!player.isFrozen) {
-          if ((keys["ArrowLeft"] || keys["a"] || keys["A"]) && player.x > 0) {
-            player.x -= player.speed;
-          }
-          if (
-            (keys["ArrowRight"] || keys["d"] || keys["D"]) &&
-            player.x < canvas.width - player.width
-          ) {
-            player.x += player.speed;
-          }
-        }
-
-        player.x += player.dx;
-        if (player.x < 0) player.x = 0;
-        if (player.x + player.width > canvas.width)
-          player.x = canvas.width - player.width;
-
-        drones.forEach((drone, index) => {
-          drone.x = player.x + droneOffsets[index].x;
-          drone.y = player.y + droneOffsets[index].y;
+          y: y,
+          vx: Math.cos(angle) * (Math.random() * 3 + 2),
+          vy: Math.sin(angle) * (Math.random() * 3 + 2),
+          life: 30,
+          maxLife: 30,
+          color: color,
         });
+      }
+    }
 
-        if (drones.length > 0 && !player.isFrozen && !player.bombModeActive) {
-          droneShootTimer++;
-          const currentCooldown = player.doubleShotLevel >= 3 ? 15 : 30;
+    // Update game state
+    function update() {
+      if (!gameRunning) return;
 
-          if (droneShootTimer >= currentCooldown) {
-            drones.forEach((drone) => {
-              const bWidth = player.doubleShotLevel >= 3 ? 8 : 5;
-              const bHeight = player.doubleShotLevel >= 3 ? 18 : 12;
-              const bSpeed = player.doubleShotLevel >= 3 ? 22 : 15;
+      if (player.isFrozen) {
+        player.freezeTimer--;
+        if (player.freezeTimer <= 0) {
+          player.isFrozen = false;
+        }
+      }
 
-              player.bullets.push({
-                x: drone.x + droneWidth / 2 - bWidth / 2,
-                y: drone.y,
-                width: bWidth,
-                height: bHeight,
-                speed: bSpeed,
-              });
+      if (player.shieldActive) {
+        player.shieldTimer--;
+        if (player.shieldTimer <= 0) {
+          player.shieldActive = false;
+          player.shieldTimer = 0;
+        }
+      }
+
+      if (player.laserActive) {
+        player.laserTimer--;
+        if (player.laserTimer <= 0) {
+          player.laserActive = false;
+        }
+      }
+
+      if (player.bombModeActive) {
+        player.bombModeTimer--;
+        if (player.bombModeTimer <= 0) {
+          player.bombModeActive = false;
+        }
+      }
+
+      player.dx = 0;
+      if (!player.isFrozen) {
+        if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
+        if (keys["ArrowRight"] && player.x < canvas.width - player.width)
+          player.x += player.speed;
+      }
+
+      if (!player.isFrozen) {
+        if ((keys["ArrowLeft"] || keys["a"] || keys["A"]) && player.x > 0) {
+          player.x -= player.speed;
+        }
+        if (
+          (keys["ArrowRight"] || keys["d"] || keys["D"]) &&
+          player.x < canvas.width - player.width
+        ) {
+          player.x += player.speed;
+        }
+      }
+
+      player.x += player.dx;
+      if (player.x < 0) player.x = 0;
+      if (player.x + player.width > canvas.width)
+        player.x = canvas.width - player.width;
+
+      drones.forEach((drone, index) => {
+        drone.x = player.x + droneOffsets[index].x;
+        drone.y = player.y + droneOffsets[index].y;
+      });
+
+      if (drones.length > 0 && !player.isFrozen && !player.bombModeActive) {
+        droneShootTimer++;
+        const currentCooldown = player.doubleShotLevel >= 3 ? 15 : 30;
+
+        if (droneShootTimer >= currentCooldown) {
+          drones.forEach((drone) => {
+            const bWidth = player.doubleShotLevel >= 3 ? 8 : 5;
+            const bHeight = player.doubleShotLevel >= 3 ? 18 : 12;
+            const bSpeed = player.doubleShotLevel >= 3 ? 22 : 15;
+
+            player.bullets.push({
+              x: drone.x + droneWidth / 2 - bWidth / 2,
+              y: drone.y,
+              width: bWidth,
+              height: bHeight,
+              speed: bSpeed,
             });
-            droneShootTimer = 0;
-          }
+          });
+          droneShootTimer = 0;
         }
+      }
 
-        // Update Bombs
-        for (let i = bombs.length - 1; i >= 0; i--) {
-          bombs[i].y -= bombs[i].speed;
+      // Update Bombs
+      for (let i = bombs.length - 1; i >= 0; i--) {
+        bombs[i].y -= bombs[i].speed;
 
-          if (bossEnemy && checkCollision(bombs[i], bossEnemy)) {
-            createExplosion(bombs[i].x, bombs[i].y, 30, "#ff3300");
-            bossEnemy.health -= 3;
+        if (bossEnemy && checkCollision(bombs[i], bossEnemy)) {
+          createExplosion(bombs[i].x, bombs[i].y, 30, "#ff3300");
+          bossEnemy.health -= 3;
 
-            if (bossEnemy.health <= 0) {
-              createExplosion(
-                bossEnemy.x + 35,
-                bossEnemy.y + 35,
-                25,
-                bossEnemy.type === "green"
-                  ? "#00ff88"
-                  : bossEnemy.type === "yellow"
-                    ? "#ffd700"
-                    : "#ff0033",
-              );
-              score += 150 + level * 50;
-              player.lives++;
-              bossEnemy = null;
-              bossSpawnTimer = 0;
-            }
-            bombs.splice(i, 1);
-            continue;
-          }
-
-          for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
-            if (bombs[i] && checkCollision(bombs[i], enemies[eIdx])) {
-              createExplosion(bombs[i].x, bombs[i].y, 30, "#ff3300");
-
-              const radius = 120;
-              for (let j = enemies.length - 1; j >= 0; j--) {
-                const dist = Math.hypot(
-                  enemies[j].x - bombs[i].x,
-                  enemies[j].y - bombs[i].y,
-                );
-                if (dist < radius) {
-                  createExplosion(
-                    enemies[j].x + 25,
-                    enemies[j].y + 25,
-                    8,
-                    "#ffaa00",
-                  );
-                  score += 10;
-                  enemies.splice(j, 1);
-                }
-              }
-
-              if (bossEnemy) {
-                const bDist = Math.hypot(
-                  bossEnemy.x + 35 - bombs[i].x,
-                  bossEnemy.y + 35 - bombs[i].y,
-                );
-                if (bDist < radius) {
-                  bossEnemy.health -= 2;
-                  if (bossEnemy.health <= 0) {
-                    createExplosion(
-                      bossEnemy.x + 35,
-                      bossEnemy.y + 35,
-                      25,
-                      bossEnemy.type === "green"
-                        ? "#00ff88"
-                        : bossEnemy.type === "yellow"
-                          ? "#ffd700"
-                          : "#ff0033",
-                    );
-                    score += 150 + level * 50;
-                    player.lives++;
-                    bossEnemy = null;
-                    bossSpawnTimer = 0;
-                  }
-                }
-              }
-
-              bombs.splice(i, 1);
-              break;
-            }
-          }
-
-          if (bombs[i] && bombs[i].y < 0) {
-            bombs.splice(i, 1);
-          }
-        }
-
-        if (player.laserActive) {
-          const laserLeft = player.x + player.width / 2 - 15;
-          const laserRight = player.x + player.width / 2 + 15;
-
-          for (let i = enemies.length - 1; i >= 0; i--) {
-            if (
-              enemies[i].x + enemies[i].width > laserLeft &&
-              enemies[i].x < laserRight &&
-              enemies[i].y < player.y
-            ) {
-              createExplosion(
-                enemies[i].x + enemies[i].width / 2,
-                enemies[i].y + enemies[i].height / 2,
-                5,
-                "#00ffff",
-              );
-              score += 10;
-              enemies.splice(i, 1);
-            }
-          }
-
-          if (
-            bossEnemy &&
-            bossEnemy.x + bossEnemy.width > laserLeft &&
-            bossEnemy.x < laserRight &&
-            bossEnemy.y < player.y
-          ) {
-            bossEnemy.health -= 0.15;
-            if (bossEnemy.health <= 0) {
-              // 1. Ko'p emas, atigi 20 ta xavfsiz zarracha yaratamiz (lag bermasligi uchun)
-              createExplosion(
-                bossEnemy.x + bossEnemy.width / 2,
-                bossEnemy.y + bossEnemy.height / 2,
-                20,
-                "#ff0055",
-              );
-
-              // 2. Bossni darhol o'chiramiz, toki boshqa o'qlar unga tegib xato bermasin
-              bossEnemy = null;
-              score += 100;
-
-              // 3. Mukofot rejimi va taymerini qat'iy belgilaymiz
-              player.laserActive = true;
-              player.laserTimer = 200; // Bu taymer update ichida kamayishi shart!
-            }
-          }
-        }
-
-        for (let i = player.bullets.length - 1; i >= 0; i--) {
-          player.bullets[i].y -= player.bullets[i].speed;
-
-          // Sariq bossning yordamchi dronlariga o'q tegishini tekshirish
-          if (bossEnemy && bossEnemy.type === "yellow") {
-            let bulletRemoved = false;
-            const bossCenterX = bossEnemy.x + bossEnemy.width / 2;
-            const bossCenterY = bossEnemy.y + bossEnemy.height / 2;
-
-            for (let mIdx = bossEnemy.minions.length - 1; mIdx >= 0; mIdx--) {
-              const minion = bossEnemy.minions[mIdx];
-              const minionX =
-                bossCenterX + Math.cos(bossAngle + minion.angle) * 60;
-              const minionY =
-                bossCenterY + Math.sin(bossAngle + minion.angle) * 60;
-
-              // Mini dron bilan o'q to'qnashuvi
-              if (
-                player.bullets[i].x < minionX + 16 &&
-                player.bullets[i].x + player.bullets[i].width > minionX - 16 &&
-                player.bullets[i].y < minionY + 16 &&
-                player.bullets[i].y + player.bullets[i].height > minionY - 16
-              ) {
-                minion.health--;
-                createExplosion(minionX, minionY, 5, "#ffd700");
-                player.bullets.splice(i, 1);
-                bulletRemoved = true;
-
-                if (minion.health <= 0) {
-                  createExplosion(minionX, minionY, 12, "#ffaa00");
-                  bossEnemy.minions.splice(mIdx, 1);
-                }
-                break;
-              }
-            }
-            if (bulletRemoved) continue;
-          }
-
-          if (player.bullets[i].y < 0) {
-            player.bullets.splice(i, 1);
-          }
-        }
-
-        // Update boss bullets
-        for (let i = bossBullets.length - 1; i >= 0; i--) {
-          bossBullets[i].x += bossBullets[i].vx;
-          bossBullets[i].y += bossBullets[i].vy;
-
-          for (let dIdx = drones.length - 1; dIdx >= 0; dIdx--) {
-            if (checkCollision(drones[dIdx], bossBullets[i])) {
-              createExplosion(
-                drones[dIdx].x + 7,
-                drones[dIdx].y + 7,
-                15,
-                "#ff3300",
-              );
-              drones.splice(dIdx, 1);
-              bossBullets.splice(i, 1);
-              break;
-            }
-          }
-
-          if (!bossBullets[i]) continue;
-
-          if (checkCollision(player, bossBullets[i])) {
-            bossBullets.splice(i, 1);
-            playerHit();
-            continue;
-          }
-
-          if (
-            bossBullets[i] &&
-            (bossBullets[i].y > canvas.height ||
-              bossBullets[i].x < 0 ||
-              bossBullets[i].x > canvas.width)
-          ) {
-            bossBullets.splice(i, 1);
-          }
-        }
-
-        for (let i = items.length - 1; i >= 0; i--) {
-          items[i].y += items[i].speed;
-
-          if (checkCollision(player, items[i])) {
-            if (items[i].type === "weapon") {
-              if (player.doubleShotLevel < 3) player.doubleShotLevel++;
-            } else if (items[i].type === "helper") {
-              if (drones.length >= maxDrones) {
-                player.laserActive = true;
-                player.laserTimer = 600;
-              } else {
-                drones.push({ x: 0, y: 0 });
-              }
-            } else if (items[i].type === "bomb") {
-              player.bombModeActive = true;
-              player.bombModeTimer = 600;
-            } else if (items[i].type === "health") {
-              player.lives++;
-              createExplosion(
-                player.x + player.width / 2,
-                player.y + player.height / 2,
-                12,
-                "#00ff88",
-              );
-            }
-            items.splice(i, 1);
-            continue;
-          }
-
-          if (items[i] && items[i].y > canvas.height) {
-            items.splice(i, 1);
-          }
-        }
-
-        // Update enemies
-        for (let i = enemies.length - 1; i >= 0; i--) {
-          enemies[i].y += enemies[i].speed;
-
-          for (let dIdx = drones.length - 1; dIdx >= 0; dIdx--) {
-            if (checkCollision(drones[dIdx], enemies[i])) {
-              createExplosion(
-                enemies[i].x + 25,
-                enemies[i].y + 25,
-                15,
-                "#ff3300",
-              );
-              enemies.splice(i, 1);
-              drones.splice(dIdx, 1);
-              break;
-            }
-          }
-
-          if (!enemies[i]) continue;
-
-          if (checkCollision(player, enemies[i])) {
+          if (bossEnemy.health <= 0) {
             createExplosion(
-              enemies[i].x + enemies[i].width / 2,
-              enemies[i].y + enemies[i].height / 2,
-              12,
-              enemies[i].isMinus ? "#00a2ff" : "#ff0055",
+              bossEnemy.x + 35,
+              bossEnemy.y + 35,
+              25,
+              bossEnemy.type === "green"
+                ? "#00ff88"
+                : bossEnemy.type === "yellow"
+                  ? "#ffd700"
+                  : "#ff0033",
             );
-            if (enemies[i].isMinus) {
-              player.isFrozen = true;
-              player.freezeTimer = 60;
-            }
-            enemies.splice(i, 1);
-            playerHit();
-            continue;
+            score += 150 + level * 50;
+            player.lives++;
+            bossEnemy = null;
+            bossSpawnTimer = 0;
+            activateShield();
           }
+          bombs.splice(i, 1);
+          continue;
+        }
 
-          for (let j = player.bullets.length - 1; j >= 0; j--) {
-            if (checkCollision(player.bullets[j], enemies[i])) {
-              enemies[i].health--;
-              player.bullets.splice(j, 1);
+        for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
+          if (bombs[i] && checkCollision(bombs[i], enemies[eIdx])) {
+            createExplosion(bombs[i].x, bombs[i].y, 30, "#ff3300");
 
-              if (enemies[i].health <= 0) {
-                if (enemies[i].isMinus) {
-                  createExplosion(
-                    enemies[i].x + enemies[i].width / 2,
-                    enemies[i].y + enemies[i].height / 2,
-                    10,
-                    "#00a2ff",
-                  );
-                  score += 15;
-                  player.isFrozen = true;
-                  player.freezeTimer = 60;
-                } else {
-                  createExplosion(
-                    enemies[i].x + enemies[i].width / 2,
-                    enemies[i].y + enemies[i].height / 2,
-                    8,
-                    "#ff0055",
-                  );
-                  score += 10 + level * 5;
-
-                  const rand = Math.random();
-                  if (rand < 0.1) {
-                    items.push({
-                      x: enemies[i].x + 12,
-                      y: enemies[i].y,
-                      width: 25,
-                      height: 25,
-                      speed: 2,
-                      type: "weapon",
-                    });
-                  } else if (rand >= 0.1 && rand < 0.2) {
-                    items.push({
-                      x: enemies[i].x + 12,
-                      y: enemies[i].y,
-                      width: 25,
-                      height: 25,
-                      speed: 2,
-                      type: "helper",
-                    });
-                  } else if (rand >= 0.2 && rand < 0.3) {
-                    items.push({
-                      x: enemies[i].x + 12,
-                      y: enemies[i].y,
-                      width: 25,
-                      height: 25,
-                      speed: 2,
-                      type: "bomb",
-                    });
-                  } else if (rand >= 0.3 && rand < 0.4) {
-                    items.push({
-                      x: enemies[i].x + 12,
-                      y: enemies[i].y,
-                      width: 25,
-                      height: 25,
-                      speed: 2,
-                      type: "health",
-                    });
-                  }
-                }
-                enemies.splice(i, 1);
-                break;
+            const radius = 120;
+            for (let j = enemies.length - 1; j >= 0; j--) {
+              const dist = Math.hypot(
+                enemies[j].x - bombs[i].x,
+                enemies[j].y - bombs[i].y,
+              );
+              if (dist < radius) {
+                createExplosion(
+                  enemies[j].x + 25,
+                  enemies[j].y + 25,
+                  8,
+                  "#ffaa00",
+                );
+                score += 10;
+                enemies.splice(j, 1);
               }
             }
-          }
 
-          if (enemies[i] && enemies[i].y > canvas.height) {
-            enemies.splice(i, 1);
-          }
-        }
-
-        for (let i = particles.length - 1; i >= 0; i--) {
-          particles[i].x += particles[i].vx;
-          particles[i].y += particles[i].vy;
-          particles[i].life--;
-          if (particles[i].life <= 0) {
-            particles.splice(i, 1);
-          }
-        }
-
-        if (!bossEnemy) {
-          bossSpawnTimer++;
-
-          if (bossSpawnTimer >= 600) {
-            const r = Math.random();
-
-            if (r < ultimateBossChance) {
-              spawnUltimateBoss();
-            } else {
-              spawnBoss();
-            }
-
-            bossSpawnTimer = 0;
-          }
-        }
-
-        // Bosslar logikasi (Qizil, Yashil va Sariq)
-        if (bossEnemy) {
-          bossEnemy.y += bossEnemy.speed;
-          if (bossEnemy.y > 80) bossEnemy.speed = 0; // Belgilangan joyga kelgach to'xtaydi
-
-          bossShootTimer++;
-          bossAngle += 0.03; // Sariq boss mini dronlarining aylanish burchagi ortadi
-
-          // --- YASHIL BOSS HARAKATI ---
-          if (bossEnemy.type === "green") {
-            bossEnemy.x += bossEnemy.horizontalSpeed;
-            if (
-              bossEnemy.x <= 0 ||
-              bossEnemy.x + bossEnemy.width >= canvas.width
-            ) {
-              bossEnemy.horizontalSpeed *= -1; // Devorga tegsa qaytadi
-            }
-          }
-
-          // --- BOSS OTISH TIZIMI ---
-          if (bossShootTimer >= 90) {
-            const bossCenterX = bossEnemy.x + bossEnemy.width / 2;
-            const bossCenterY = bossEnemy.y + bossEnemy.height;
-
-            if (bossEnemy.type === "red") {
-              // Qizil Boss: O'yinchiga qarab nishonli bitta o'q otadi
-              const angle = Math.atan2(
-                player.y + 20 - bossCenterY,
-                player.x + 20 - bossCenterX,
+            if (bossEnemy) {
+              const bDist = Math.hypot(
+                bossEnemy.x + 35 - bombs[i].x,
+                bossEnemy.y + 35 - bombs[i].y,
               );
-              bossBullets.push({
-                x: bossCenterX - 5,
-                y: bossCenterY,
-                width: 10,
-                height: 10,
-                vx: Math.cos(angle) * 4.5,
-                vy: Math.sin(angle) * 4.5,
-              });
-            } else if (bossEnemy.type === "green") {
-              // Yashil Boss: Pastga qarata tezkor 3 ta vertikal o'q otadi
-              bossBullets.push({
-                x: bossCenterX - 20,
-                y: bossCenterY,
-                width: 8,
-                height: 14,
-                vx: 0,
-                vy: 6,
-              });
-              bossBullets.push({
-                x: bossCenterX,
-                y: bossCenterY,
-                width: 8,
-                height: 14,
-                vx: 0,
-                vy: 6,
-              });
-              bossBullets.push({
-                x: bossCenterX + 20,
-                y: bossCenterY,
-                width: 8,
-                height: 14,
-                vx: 0,
-                vy: 6,
-              });
-            } else if (bossEnemy.type === "yellow") {
-              // Sariq Boss: O'zi va tirik bo'lgan yordamchilaridan o'q otiladi
-              bossBullets.push({
-                x: bossCenterX - 5,
-                y: bossCenterY,
-                width: 10,
-                height: 10,
-                vx: 0,
-                vy: 4,
-              });
-
-              bossEnemy.minions.forEach((minion) => {
-                const mX =
-                  bossCenterX + Math.cos(bossAngle + minion.angle) * 60;
-                const mY =
-                  bossCenterY -
-                  bossEnemy.height / 2 +
-                  Math.sin(bossAngle + minion.angle) * 60;
-                bossBullets.push({
-                  x: mX - 4,
-                  y: mY,
-                  width: 8,
-                  height: 8,
-                  vx: 0,
-                  vy: 5,
-                });
-              });
-            }
-            bossShootTimer = 0;
-          }
-
-          if (checkCollision(player, bossEnemy)) {
-            createExplosion(bossEnemy.x + 35, bossEnemy.y + 35, 15, "#ff0055");
-            bossEnemy = null;
-            playerHit();
-          }
-
-          if (bossEnemy) {
-            for (let j = player.bullets.length - 1; j >= 0; j--) {
-              if (checkCollision(player.bullets[j], bossEnemy)) {
-                bossEnemy.health--;
-                player.bullets.splice(j, 1);
+              if (bDist < radius) {
+                bossEnemy.health -= 2;
                 if (bossEnemy.health <= 0) {
                   createExplosion(
                     bossEnemy.x + 35,
@@ -1309,408 +863,893 @@
                   player.lives++;
                   bossEnemy = null;
                   bossSpawnTimer = 0;
-                  break;
+                  activateShield();
                 }
               }
             }
+
+            bombs.splice(i, 1);
+            break;
           }
-          if (bossEnemy && bossEnemy.type === "ultimate") {
-            bossEnemy.y += bossEnemy.speed;
+        }
 
-            if (bossEnemy.y > 100) bossEnemy.speed = 0;
+        if (bombs[i] && bombs[i].y < 0) {
+          bombs.splice(i, 1);
+        }
+      }
 
-            bossEnemy.attackTimer++;
+      if (player.laserActive) {
+        const laserLeft = player.x + player.width / 2 - 15;
+        const laserRight = player.x + player.width / 2 + 15;
 
-            // phase system
-            if (bossEnemy.health < 55) bossEnemy.phase = 2;
-            if (bossEnemy.health < 25) bossEnemy.phase = 3;
+        for (let i = enemies.length - 1; i >= 0; i--) {
+          if (
+            enemies[i].x + enemies[i].width > laserLeft &&
+            enemies[i].x < laserRight &&
+            enemies[i].y < player.y
+          ) {
+            createExplosion(
+              enemies[i].x + enemies[i].width / 2,
+              enemies[i].y + enemies[i].height / 2,
+              5,
+              "#00ffff",
+            );
+            score += 10;
+            enemies.splice(i, 1);
+          }
+        }
 
-            // harakat
-            bossEnemy.x += Math.sin(Date.now() / 250) * 2;
+        if (
+          bossEnemy &&
+          bossEnemy.x + bossEnemy.width > laserLeft &&
+          bossEnemy.x < laserRight &&
+          bossEnemy.y < player.y
+        ) {
+          bossEnemy.health -= 0.15;
+          if (bossEnemy.health <= 0) {
+            // 1. Ko'p emas, atigi 20 ta xavfsiz zarracha yaratamiz (lag bermasligi uchun)
+            createExplosion(
+              bossEnemy.x + bossEnemy.width / 2,
+              bossEnemy.y + bossEnemy.height / 2,
+              20,
+              "#ff0055",
+            );
 
-            if (bossEnemy.attackTimer > 50) {
-              const cx = bossEnemy.x + bossEnemy.width / 2;
-              const cy = bossEnemy.y + bossEnemy.height;
+            // 2. Bossni darhol o'chiramiz, toki boshqa o'qlar unga tegib xato bermasin
+            bossEnemy = null;
+            score += 100;
 
-              if (bossEnemy.phase === 1) {
+            // 3. Mukofot rejimi va taymerini qat'iy belgilaymiz
+            player.laserActive = true;
+            player.laserTimer = 200; // Bu taymer update ichida kamayishi shart!
+            activateShield();
+          }
+        }
+      }
+
+      for (let i = player.bullets.length - 1; i >= 0; i--) {
+        player.bullets[i].y -= player.bullets[i].speed;
+
+        // Sariq bossning yordamchi dronlariga o'q tegishini tekshirish
+        if (bossEnemy && bossEnemy.type === "yellow") {
+          let bulletRemoved = false;
+          const bossCenterX = bossEnemy.x + bossEnemy.width / 2;
+          const bossCenterY = bossEnemy.y + bossEnemy.height / 2;
+
+          for (let mIdx = bossEnemy.minions.length - 1; mIdx >= 0; mIdx--) {
+            const minion = bossEnemy.minions[mIdx];
+            const minionX =
+              bossCenterX + Math.cos(bossAngle + minion.angle) * 60;
+            const minionY =
+              bossCenterY + Math.sin(bossAngle + minion.angle) * 60;
+
+            // Mini dron bilan o'q to'qnashuvi
+            if (
+              player.bullets[i].x < minionX + 16 &&
+              player.bullets[i].x + player.bullets[i].width > minionX - 16 &&
+              player.bullets[i].y < minionY + 16 &&
+              player.bullets[i].y + player.bullets[i].height > minionY - 16
+            ) {
+              minion.health--;
+              createExplosion(minionX, minionY, 5, "#ffd700");
+              player.bullets.splice(i, 1);
+              bulletRemoved = true;
+
+              if (minion.health <= 0) {
+                createExplosion(minionX, minionY, 12, "#ffaa00");
+                bossEnemy.minions.splice(mIdx, 1);
+              }
+              break;
+            }
+          }
+          if (bulletRemoved) continue;
+        }
+
+        if (player.bullets[i].y < 0) {
+          player.bullets.splice(i, 1);
+          continue;
+        }
+
+        particles.push({
+          x: player.bullets[i].x + player.bullets[i].width / 2,
+          y: player.bullets[i].y + player.bullets[i].height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: 0.4 + Math.random() * 0.4,
+          life: 12,
+          maxLife: 12,
+          color: "rgba(128, 255, 240, 0.7)",
+          size: 2,
+        });
+      }
+
+      // Update boss bullets
+      for (let i = bossBullets.length - 1; i >= 0; i--) {
+        bossBullets[i].x += bossBullets[i].vx;
+        bossBullets[i].y += bossBullets[i].vy;
+
+        for (let dIdx = drones.length - 1; dIdx >= 0; dIdx--) {
+          if (checkCollision(drones[dIdx], bossBullets[i])) {
+            createExplosion(
+              drones[dIdx].x + 7,
+              drones[dIdx].y + 7,
+              15,
+              "#ff3300",
+            );
+            drones.splice(dIdx, 1);
+            bossBullets.splice(i, 1);
+            break;
+          }
+        }
+
+        if (!bossBullets[i]) continue;
+
+        if (checkCollision(player, bossBullets[i])) {
+          bossBullets.splice(i, 1);
+          playerHit();
+          continue;
+        }
+
+        if (
+          bossBullets[i] &&
+          (bossBullets[i].y > canvas.height ||
+            bossBullets[i].x < 0 ||
+            bossBullets[i].x > canvas.width)
+        ) {
+          bossBullets.splice(i, 1);
+        }
+      }
+
+      for (let i = items.length - 1; i >= 0; i--) {
+        items[i].y += items[i].speed;
+
+        if (checkCollision(player, items[i])) {
+          if (items[i].type === "weapon") {
+            if (player.doubleShotLevel < 3) player.doubleShotLevel++;
+          } else if (items[i].type === "helper") {
+            if (drones.length >= maxDrones) {
+              player.laserActive = true;
+              player.laserTimer = 600;
+            } else {
+              drones.push({ x: 0, y: 0 });
+            }
+          } else if (items[i].type === "bomb") {
+            player.bombModeActive = true;
+            player.bombModeTimer = 600;
+          } else if (items[i].type === "health") {
+            player.lives++;
+            createExplosion(
+              player.x + player.width / 2,
+              player.y + player.height / 2,
+              12,
+              "#00ff88",
+            );
+          }
+          items.splice(i, 1);
+          continue;
+        }
+
+        if (items[i] && items[i].y > canvas.height) {
+          items.splice(i, 1);
+        }
+      }
+
+      // Update enemies
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        enemies[i].y += enemies[i].speed;
+
+        for (let dIdx = drones.length - 1; dIdx >= 0; dIdx--) {
+          if (checkCollision(drones[dIdx], enemies[i])) {
+            createExplosion(
+              enemies[i].x + 25,
+              enemies[i].y + 25,
+              15,
+              "#ff3300",
+            );
+            enemies.splice(i, 1);
+            drones.splice(dIdx, 1);
+            break;
+          }
+        }
+
+        if (!enemies[i]) continue;
+
+        if (checkCollision(player, enemies[i])) {
+          createExplosion(
+            enemies[i].x + enemies[i].width / 2,
+            enemies[i].y + enemies[i].height / 2,
+            12,
+            enemies[i].isMinus ? "#00a2ff" : "#ff0055",
+          );
+          if (enemies[i].isMinus) {
+            player.isFrozen = true;
+            player.freezeTimer = 60;
+          }
+          enemies.splice(i, 1);
+          playerHit();
+          continue;
+        }
+
+        for (let j = player.bullets.length - 1; j >= 0; j--) {
+          if (checkCollision(player.bullets[j], enemies[i])) {
+            enemies[i].health--;
+            player.bullets.splice(j, 1);
+
+            if (enemies[i].health <= 0) {
+              if (enemies[i].isMinus) {
+                createExplosion(
+                  enemies[i].x + enemies[i].width / 2,
+                  enemies[i].y + enemies[i].height / 2,
+                  10,
+                  "#00a2ff",
+                );
+                score += 15;
+                player.isFrozen = true;
+                player.freezeTimer = 60;
+              } else {
+                createExplosion(
+                  enemies[i].x + enemies[i].width / 2,
+                  enemies[i].y + enemies[i].height / 2,
+                  8,
+                  "#ff0055",
+                );
+                score += 10 + level * 5;
+
+                const rand = Math.random();
+                if (rand < 0.1) {
+                  items.push({
+                    x: enemies[i].x + 12,
+                    y: enemies[i].y,
+                    width: 25,
+                    height: 25,
+                    speed: 2,
+                    type: "weapon",
+                  });
+                } else if (rand >= 0.1 && rand < 0.2) {
+                  items.push({
+                    x: enemies[i].x + 12,
+                    y: enemies[i].y,
+                    width: 25,
+                    height: 25,
+                    speed: 2,
+                    type: "helper",
+                  });
+                } else if (rand >= 0.2 && rand < 0.3) {
+                  items.push({
+                    x: enemies[i].x + 12,
+                    y: enemies[i].y,
+                    width: 25,
+                    height: 25,
+                    speed: 2,
+                    type: "bomb",
+                  });
+                } else if (rand >= 0.3 && rand < 0.4) {
+                  items.push({
+                    x: enemies[i].x + 12,
+                    y: enemies[i].y,
+                    width: 25,
+                    height: 25,
+                    speed: 2,
+                    type: "health",
+                  });
+                }
+              }
+              enemies.splice(i, 1);
+              break;
+            }
+          }
+        }
+
+        if (enemies[i] && enemies[i].y > canvas.height) {
+          enemies.splice(i, 1);
+        }
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].x += particles[i].vx;
+        particles[i].y += particles[i].vy;
+        particles[i].life--;
+        if (particles[i].life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+
+      if (!bossEnemy) {
+        bossSpawnTimer++;
+
+        if (bossSpawnTimer >= 600) {
+          const r = Math.random();
+
+          if (r < ultimateBossChance) {
+            spawnUltimateBoss();
+          } else {
+            spawnBoss();
+          }
+
+          bossSpawnTimer = 0;
+        }
+      }
+
+      // Bosslar logikasi (Qizil, Yashil va Sariq)
+      if (bossEnemy) {
+        bossEnemy.y += bossEnemy.speed;
+        if (bossEnemy.y > 80) bossEnemy.speed = 0; // Belgilangan joyga kelgach to'xtaydi
+
+        bossShootTimer++;
+        bossAngle += 0.03; // Sariq boss mini dronlarining aylanish burchagi ortadi
+
+        // --- YASHIL BOSS HARAKATI ---
+        if (bossEnemy.type === "green") {
+          bossEnemy.x += bossEnemy.horizontalSpeed;
+          if (
+            bossEnemy.x <= 0 ||
+            bossEnemy.x + bossEnemy.width >= canvas.width
+          ) {
+            bossEnemy.horizontalSpeed *= -1; // Devorga tegsa qaytadi
+          }
+        }
+
+        // --- BOSS OTISH TIZIMI ---
+        if (bossShootTimer >= 90) {
+          const bossCenterX = bossEnemy.x + bossEnemy.width / 2;
+          const bossCenterY = bossEnemy.y + bossEnemy.height;
+
+          if (bossEnemy.type === "red") {
+            // Qizil Boss: O'yinchiga qarab nishonli bitta o'q otadi
+            const angle = Math.atan2(
+              player.y + 20 - bossCenterY,
+              player.x + 20 - bossCenterX,
+            );
+            bossBullets.push({
+              x: bossCenterX - 5,
+              y: bossCenterY,
+              width: 10,
+              height: 10,
+              vx: Math.cos(angle) * 4.5,
+              vy: Math.sin(angle) * 4.5,
+            });
+          } else if (bossEnemy.type === "green") {
+            // Yashil Boss: Pastga qarata tezkor 3 ta vertikal o'q otadi
+            bossBullets.push({
+              x: bossCenterX - 20,
+              y: bossCenterY,
+              width: 8,
+              height: 14,
+              vx: 0,
+              vy: 6,
+            });
+            bossBullets.push({
+              x: bossCenterX,
+              y: bossCenterY,
+              width: 8,
+              height: 14,
+              vx: 0,
+              vy: 6,
+            });
+            bossBullets.push({
+              x: bossCenterX + 20,
+              y: bossCenterY,
+              width: 8,
+              height: 14,
+              vx: 0,
+              vy: 6,
+            });
+          } else if (bossEnemy.type === "yellow") {
+            // Sariq Boss: O'zi va tirik bo'lgan yordamchilaridan o'q otiladi
+            bossBullets.push({
+              x: bossCenterX - 5,
+              y: bossCenterY,
+              width: 10,
+              height: 10,
+              vx: 0,
+              vy: 4,
+            });
+
+            bossEnemy.minions.forEach((minion) => {
+              const mX =
+                bossCenterX + Math.cos(bossAngle + minion.angle) * 60;
+              const mY =
+                bossCenterY -
+                bossEnemy.height / 2 +
+                Math.sin(bossAngle + minion.angle) * 60;
+              bossBullets.push({
+                x: mX - 4,
+                y: mY,
+                width: 8,
+                height: 8,
+                vx: 0,
+                vy: 5,
+              });
+            });
+          }
+          bossShootTimer = 0;
+        }
+
+        if (checkCollision(player, bossEnemy)) {
+          createExplosion(bossEnemy.x + 35, bossEnemy.y + 35, 15, "#ff0055");
+          bossEnemy = null;
+          playerHit();
+        }
+
+        if (bossEnemy) {
+          for (let j = player.bullets.length - 1; j >= 0; j--) {
+            if (checkCollision(player.bullets[j], bossEnemy)) {
+              bossEnemy.health--;
+              player.bullets.splice(j, 1);
+              if (bossEnemy.health <= 0) {
+                createExplosion(
+                  bossEnemy.x + 35,
+                  bossEnemy.y + 35,
+                  25,
+                  bossEnemy.type === "green"
+                    ? "#00ff88"
+                    : bossEnemy.type === "yellow"
+                      ? "#ffd700"
+                      : "#ff0033",
+                );
+                score += 150 + level * 50;
+                player.lives++;
+                bossEnemy = null;
+                bossSpawnTimer = 0;
+                activateShield();
+                break;
+              }
+            }
+          }
+        }
+        if (bossEnemy && bossEnemy.type === "ultimate") {
+          bossEnemy.y += bossEnemy.speed;
+
+          if (bossEnemy.y > 100) bossEnemy.speed = 0;
+
+          bossEnemy.attackTimer++;
+
+          // phase system
+          if (bossEnemy.health < 55) bossEnemy.phase = 2;
+          if (bossEnemy.health < 25) bossEnemy.phase = 3;
+
+          // harakat
+          bossEnemy.x += Math.sin(Date.now() / 250) * 2;
+
+          if (bossEnemy.attackTimer > 50) {
+            const cx = bossEnemy.x + bossEnemy.width / 2;
+            const cy = bossEnemy.y + bossEnemy.height;
+
+            if (bossEnemy.phase === 1) {
+              bossBullets.push({
+                x: cx,
+                y: cy,
+                width: 10,
+                height: 10,
+                vx: 0,
+                vy: 6,
+              });
+            }
+
+            if (bossEnemy.phase === 2) {
+              for (let i = -1; i <= 1; i++) {
                 bossBullets.push({
                   x: cx,
                   y: cy,
                   width: 10,
                   height: 10,
-                  vx: 0,
+                  vx: i * 2,
                   vy: 6,
                 });
               }
-
-              if (bossEnemy.phase === 2) {
-                for (let i = -1; i <= 1; i++) {
-                  bossBullets.push({
-                    x: cx,
-                    y: cy,
-                    width: 10,
-                    height: 10,
-                    vx: i * 2,
-                    vy: 6,
-                  });
-                }
-              }
-
-              if (bossEnemy.phase === 3) {
-                for (let i = -3; i <= 3; i++) {
-                  bossBullets.push({
-                    x: cx + i * 15,
-                    y: cy,
-                    width: 8,
-                    height: 8,
-                    vx: 0,
-                    vy: 7,
-                  });
-                }
-              }
-
-              bossEnemy.attackTimer = 0;
             }
 
-            // collision player
-            if (checkCollision(player, bossEnemy)) {
-              playerHit();
-            }
-
-            // bullet hit
-            for (let j = player.bullets.length - 1; j >= 0; j--) {
-              if (checkCollision(player.bullets[j], bossEnemy)) {
-                bossEnemy.health--;
-                player.bullets.splice(j, 1);
-
-                if (bossEnemy.health <= 0) {
-                  createExplosion(
-                    bossEnemy.x + 60,
-                    bossEnemy.y + 60,
-                    40,
-                    "#ff00ff",
-                  );
-
-                  score += 500;
-                  player.lives += 2;
-
-                  bossEnemy = null;
-                  bossSpawnTimer = 0;
-                }
+            if (bossEnemy.phase === 3) {
+              for (let i = -3; i <= 3; i++) {
+                bossBullets.push({
+                  x: cx + i * 15,
+                  y: cy,
+                  width: 8,
+                  height: 8,
+                  vx: 0,
+                  vy: 7,
+                });
               }
             }
+
+            bossEnemy.attackTimer = 0;
           }
-        }
 
-        if (Math.random() < enemySpawnRate / 1000) spawnEnemy();
+          // collision player
+          if (checkCollision(player, bossEnemy)) {
+            playerHit();
+          }
 
-        const calculatedLevel = Math.floor(score / 250) + 1;
-        if (calculatedLevel <= 100) {
-          level = calculatedLevel;
-          enemySpawnRate = 25 + level * 3;
-          if (enemySpawnRate > 55) enemySpawnRate = 55;
-        }
+          // bullet hit
+          for (let j = player.bullets.length - 1; j >= 0; j--) {
+            if (!bossEnemy) break;
+            if (checkCollision(player.bullets[j], bossEnemy)) {
+              bossEnemy.health--;
+              player.bullets.splice(j, 1);
 
-        document.getElementById("score").textContent = score;
-        document.getElementById("level").textContent = level;
-        if (recordElem) {
-          recordElem.textContent = record;
-        }
-        document.getElementById("lives").textContent = player.lives;
-        document.getElementById("weaponLvl").textContent =
-          player.doubleShotLevel + "x";
+              if (bossEnemy.health <= 0) {
+                createExplosion(
+                  bossEnemy.x + 60,
+                  bossEnemy.y + 60,
+                  40,
+                  "#ff00ff",
+                );
 
-        let statusText = "";
-        if (player.laserActive)
-          statusText = `LASER: ${(player.laserTimer / 60).toFixed(1)}s`;
-        else if (player.bombModeActive)
-          statusText = `BOMB MODE: ${(player.bombModeTimer / 60).toFixed(1)}s`;
-        document.getElementById("modeStatus").textContent = statusText;
-        document.getElementById("helpersLvl").textContent =
-          drones.length + "/4";
+                score += 500;
+                player.lives += 2;
 
-        // Update boss health UI: appear only when a boss exists and reflect current health
-        if (
-          bossHealthControlElem &&
-          bossHealthRangeElem &&
-          bossHealthValueElem
-        ) {
-          if (bossEnemy) {
-            bossHealthControlElem.classList.remove("hidden");
-            bossHealthControlElem.setAttribute("aria-hidden", "false");
-            bossHealthRangeElem.max = Math.max(
-              1,
-              Math.round(bossEnemy.maxHealth),
-            );
-            bossHealthRangeElem.value = Math.max(
-              0,
-              Math.round(bossEnemy.health),
-            );
-            bossHealthValueElem.textContent = bossHealthRangeElem.value;
-          } else {
-            bossHealthControlElem.classList.add("hidden");
-            bossHealthControlElem.setAttribute("aria-hidden", "true");
+                bossEnemy = null;
+                bossSpawnTimer = 0;
+                activateShield();
+                break;
+              }
+            }
           }
         }
       }
 
-      // Draw Screen
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (Math.random() < enemySpawnRate / 1000) spawnEnemy();
 
-        ctx.fillStyle = "rgba(10, 14, 39, 0.1)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const calculatedLevel = Math.floor(score / 250) + 1;
+      if (calculatedLevel <= 100) {
+        level = calculatedLevel;
+        enemySpawnRate = 25 + level * 3;
+        if (enemySpawnRate > 55) enemySpawnRate = 55;
+      }
 
-        ctx.fillStyle = "rgba(0, 255, 136, 0.3)";
-        for (let i = 0; i < 100; i++) {
-          ctx.fillRect(
-            (i * 73) % canvas.width,
-            (i * 137) % canvas.height,
+      document.getElementById("score").textContent = score;
+      document.getElementById("level").textContent = level;
+      if (recordElem) {
+        recordElem.textContent = record;
+      }
+      document.getElementById("lives").textContent = player.lives;
+      document.getElementById("weaponLvl").textContent =
+        player.doubleShotLevel + "x";
+
+      let statusText = "";
+      if (player.laserActive)
+        statusText = `LASER: ${(player.laserTimer / 60).toFixed(1)}s`;
+      else if (player.bombModeActive)
+        statusText = `BOMB MODE: ${(player.bombModeTimer / 60).toFixed(1)}s`;
+      document.getElementById("modeStatus").textContent = statusText;
+      document.getElementById("helpersLvl").textContent =
+        drones.length + "/4";
+
+      // Update boss health UI: appear only when a boss exists and reflect current health
+      if (
+        bossHealthControlElem &&
+        bossHealthRangeElem &&
+        bossHealthValueElem
+      ) {
+        if (bossEnemy) {
+          bossHealthControlElem.classList.remove("hidden");
+          bossHealthControlElem.setAttribute("aria-hidden", "false");
+          bossHealthRangeElem.max = Math.max(
             1,
-            1,
+            Math.round(bossEnemy.maxHealth),
           );
-        }
-
-        if (player.laserActive) {
-          ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
-          ctx.shadowColor = "#00ffff";
-          ctx.shadowBlur = 30;
-          ctx.fillRect(player.x + player.width / 2 - 15, 0, 30, player.y);
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(player.x + player.width / 2 - 5, 0, 10, player.y);
-          ctx.shadowColor = "transparent";
-        }
-
-        drawPlayer();
-
-        // Draw Drones
-        drones.forEach((drone) => {
-          ctx.fillStyle = player.doubleShotLevel >= 3 ? "#ffaa00" : "#00a2ff";
-          ctx.shadowColor = ctx.fillStyle;
-          ctx.shadowBlur = 10;
-          ctx.fillRect(drone.x, drone.y, droneWidth, droneHeight);
-          ctx.shadowColor = "transparent";
-        });
-
-        // Draw Bombs
-        ctx.fillStyle = "#ff3300";
-        bombs.forEach((bomb) => {
-          ctx.beginPath();
-          ctx.arc(bomb.x + 10, bomb.y + 10, 10, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowColor = "#ff3300";
-          ctx.shadowBlur = 15;
-        });
-        ctx.shadowColor = "transparent";
-
-        ctx.fillStyle = "#00ff88";
-        for (let bullet of player.bullets)
-          ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
-
-        // Draw Boss Bullets
-        for (let bBullet of bossBullets) {
-          ctx.fillStyle = "#ffaa00";
-          ctx.beginPath();
-          ctx.arc(
-            bBullet.x + bBullet.width / 2,
-            bBullet.y + bBullet.height / 2,
-            bBullet.width / 2 + 1,
+          bossHealthRangeElem.value = Math.max(
             0,
-            Math.PI * 2,
+            Math.round(bossEnemy.health),
           );
-          ctx.fill();
-        }
-
-        for (let item of items) {
-          if (item.type === "weapon") {
-            ctx.fillStyle = "#00ff88";
-            ctx.fillRect(item.x, item.y, item.width, item.height);
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 14px Arial";
-            ctx.fillText("P", item.x + 7, item.y + 18);
-          } else if (item.type === "helper") {
-            ctx.fillStyle = "#00a2ff";
-            ctx.fillRect(item.x, item.y, item.width, item.height);
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 14px Arial";
-            ctx.fillText("H", item.x + 7, item.y + 18);
-          } else if (item.type === "bomb") {
-            ctx.fillStyle = "#ff3300";
-            ctx.fillRect(item.x, item.y, item.width, item.height);
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 14px Arial";
-            ctx.fillText("B", item.x + 7, item.y + 18);
-          }
-          ctx.strokeStyle = "#ffffff";
-          ctx.strokeRect(item.x, item.y, item.width, item.height);
-        }
-
-        for (let enemy of enemies) drawEnemy(enemy);
-        if (bossEnemy) drawBoss(bossEnemy);
-
-        for (let particle of particles) {
-          ctx.fillStyle = particle.color;
-          ctx.fillRect(particle.x, particle.y, 3, 3);
+          bossHealthValueElem.textContent = bossHealthRangeElem.value;
+        } else {
+          bossHealthControlElem.classList.add("hidden");
+          bossHealthControlElem.setAttribute("aria-hidden", "true");
         }
       }
+    }
 
-      function drawPlayer() {
-        ctx.fillStyle = player.isFrozen ? "#00a2ff" : "#00ff88";
-        ctx.shadowColor = player.isFrozen
-          ? "rgba(0, 162, 255, 0.8)"
-          : "rgba(0, 255, 136, 0.8)";
-        ctx.shadowBlur = 15;
-        ctx.fillRect(player.x + 15, player.y + 10, 10, 30);
-        ctx.beginPath();
-        ctx.moveTo(player.x + 5, player.y + 15);
-        ctx.lineTo(player.x + 15, player.y + 25);
-        ctx.lineTo(player.x + 10, player.y + 20);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(player.x + 35, player.y + 15);
-        ctx.lineTo(player.x + 25, player.y + 25);
-        ctx.lineTo(player.x + 30, player.y + 20);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(player.x + 10, player.y);
-        ctx.lineTo(player.x + 20, player.y - 10);
-        ctx.lineTo(player.x + 30, player.y);
-        ctx.fill();
-        ctx.shadowColor = "transparent";
+    // Draw Screen
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "rgba(10, 14, 39, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "rgba(0, 255, 136, 0.3)";
+      for (let i = 0; i < 100; i++) {
+        ctx.fillRect(
+          (i * 73) % canvas.width,
+          (i * 137) % canvas.height,
+          1,
+          1,
+        );
       }
 
-      function drawEnemy(enemy) {
-        const enemyColor = enemy.isMinus ? "#00a2ff" : "#ff0055";
-        ctx.fillStyle = enemyColor;
-        ctx.shadowColor = enemyColor;
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        ctx.arc(enemy.x + 25, enemy.y + 25, 25, 0, Math.PI * 2);
-        ctx.fill();
+      if (player.laserActive) {
+        ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
+        ctx.shadowColor = "#00ffff";
+        ctx.shadowBlur = 30;
+        ctx.fillRect(player.x + player.width / 2 - 15, 0, 30, player.y);
         ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.arc(enemy.x + 15, enemy.y + 15, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(enemy.x + 35, enemy.y + 15, 3, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(player.x + player.width / 2 - 5, 0, 10, player.y);
         ctx.shadowColor = "transparent";
       }
 
-      // Boss chizish tizimi (Qizil, Yashil va Sariq)
-      function drawBoss(boss) {
-        if (boss.type === "ultimate") {
-          ctx.shadowColor = "#ff00ff";
-          ctx.shadowBlur = 40;
+      if (player.shotFlashTimer > 0) {
+        const flashX = player.x + player.width / 2;
+        const flashY = player.y;
+        ctx.save();
+        ctx.strokeStyle = "rgba(0, 255, 218, 0.85)";
+        ctx.lineWidth = 2;
+        ctx.shadowColor = "rgba(0, 255, 218, 0.7)";
+        ctx.shadowBlur = 16;
+        ctx.beginPath();
+        ctx.arc(flashX, flashY, 18, -Math.PI * 0.3, -Math.PI * 0.7, true);
+        ctx.stroke();
+        ctx.restore();
+        player.shotFlashTimer--;
+      }
 
-          ctx.fillStyle = "#ff00ff";
-          ctx.beginPath();
-          ctx.arc(boss.x + 60, boss.y + 60, 55, 0, Math.PI * 2);
-          ctx.fill();
+      drawPlayer();
 
-          ctx.fillStyle = "#000";
-          ctx.beginPath();
-          ctx.arc(boss.x + 60, boss.y + 60, 25, 0, Math.PI * 2);
-          ctx.fill();
+      // Draw Drones
+      drones.forEach((drone) => {
+        ctx.fillStyle = player.doubleShotLevel >= 3 ? "#ffaa00" : "#00a2ff";
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 10;
+        ctx.fillRect(drone.x, drone.y, droneWidth, droneHeight);
+        ctx.shadowColor = "transparent";
+      });
 
-          ctx.fillStyle = "#fff";
-          ctx.fillRect(boss.x + 40, boss.y + 40, 10, 10);
-          ctx.fillRect(boss.x + 70, boss.y + 40, 10, 10);
+      // Draw Bombs
+      ctx.fillStyle = "#ff3300";
+      bombs.forEach((bomb) => {
+        ctx.beginPath();
+        ctx.arc(bomb.x + 10, bomb.y + 10, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowColor = "#ff3300";
+        ctx.shadowBlur = 15;
+      });
+      ctx.shadowColor = "transparent";
 
-          ctx.fillStyle = "red";
-          ctx.fillRect(boss.x, boss.y + 130, 120, 8);
+      ctx.shadowColor = "rgba(128, 255, 240, 0.9)";
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = "#80fff0";
+      for (let bullet of player.bullets) {
+        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+      }
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
 
-          ctx.fillStyle = "lime";
-          ctx.fillRect(
-            boss.x,
-            boss.y + 130,
-            120 * (boss.health / boss.maxHealth),
-            8,
-          );
+      // Draw Boss Bullets
+      for (let bBullet of bossBullets) {
+        ctx.fillStyle = "#ffaa00";
+        ctx.beginPath();
+        ctx.arc(
+          bBullet.x + bBullet.width / 2,
+          bBullet.y + bBullet.height / 2,
+          bBullet.width / 2 + 1,
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
+      }
 
-          ctx.shadowBlur = 0;
-          return;
+      for (let item of items) {
+        if (item.type === "weapon") {
+          ctx.fillStyle = "#00ff88";
+          ctx.fillRect(item.x, item.y, item.width, item.height);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 14px Arial";
+          ctx.fillText("P", item.x + 7, item.y + 18);
+        } else if (item.type === "helper") {
+          ctx.fillStyle = "#00a2ff";
+          ctx.fillRect(item.x, item.y, item.width, item.height);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 14px Arial";
+          ctx.fillText("H", item.x + 7, item.y + 18);
+        } else if (item.type === "bomb") {
+          ctx.fillStyle = "#ff3300";
+          ctx.fillRect(item.x, item.y, item.width, item.height);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 14px Arial";
+          ctx.fillText("B", item.x + 7, item.y + 18);
         }
+        ctx.strokeStyle = "#ffffff";
+        ctx.strokeRect(item.x, item.y, item.width, item.height);
+      }
 
-        let bossColor = "#ff0033"; // Qizil standart
-        if (boss.type === "green") bossColor = "#00ff88";
-        if (boss.type === "yellow") bossColor = "#ffd700";
+      for (let enemy of enemies) drawEnemy(enemy);
+      if (bossEnemy) drawBoss(bossEnemy);
 
-        ctx.shadowColor = bossColor;
-        ctx.shadowBlur = 25;
-        ctx.fillStyle = bossColor;
+      for (let particle of particles) {
+        ctx.fillStyle = particle.color;
+        const size = particle.size || 3;
+        ctx.fillRect(particle.x, particle.y, size, size);
+      }
+    }
+
+    function drawPlayer() {
+      if (player.shieldActive) {
+        ctx.save();
+        ctx.strokeStyle = "rgba(0, 255, 255, 0.9)";
+        ctx.lineWidth = 4;
+        ctx.shadowColor = "rgba(0, 255, 255, 0.6)";
+        ctx.shadowBlur = 20;
         ctx.beginPath();
-        ctx.arc(boss.x + 35, boss.y + 35, 32, 0, Math.PI * 2);
+        ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 34, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      ctx.fillStyle = player.isFrozen ? "#00a2ff" : "#00ff88";
+      ctx.shadowColor = player.isFrozen
+        ? "rgba(0, 162, 255, 0.8)"
+        : "rgba(0, 255, 136, 0.8)";
+      ctx.shadowBlur = 15;
+      ctx.fillRect(player.x + 15, player.y + 10, 10, 30);
+      ctx.beginPath();
+      ctx.moveTo(player.x + 5, player.y + 15);
+      ctx.lineTo(player.x + 15, player.y + 25);
+      ctx.lineTo(player.x + 10, player.y + 20);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(player.x + 35, player.y + 15);
+      ctx.lineTo(player.x + 25, player.y + 25);
+      ctx.lineTo(player.x + 30, player.y + 20);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(player.x + 10, player.y);
+      ctx.lineTo(player.x + 20, player.y - 10);
+      ctx.lineTo(player.x + 30, player.y);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+    }
+
+    function drawEnemy(enemy) {
+      const enemyColor = enemy.isMinus ? "#00a2ff" : "#ff0055";
+      ctx.fillStyle = enemyColor;
+      ctx.shadowColor = enemyColor;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(enemy.x + 25, enemy.y + 25, 25, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(enemy.x + 15, enemy.y + 15, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(enemy.x + 35, enemy.y + 15, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+    }
+
+    // Boss chizish tizimi (Qizil, Yashil va Sariq)
+    function drawBoss(boss) {
+      if (boss.type === "ultimate") {
+        ctx.shadowColor = "#ff00ff";
+        ctx.shadowBlur = 40;
+
+        ctx.fillStyle = "#ff00ff";
+        ctx.beginPath();
+        ctx.arc(boss.x + 60, boss.y + 60, 55, 0, Math.PI * 2);
         ctx.fill();
 
-        // Ko'zlar
-        ctx.fillStyle = boss.type === "yellow" ? "#ff0055" : "#ffd700";
+        ctx.fillStyle = "#000";
         ctx.beginPath();
-        ctx.arc(boss.x + 23, boss.y + 30, 6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(boss.x + 47, boss.y + 30, 6, 0, Math.PI * 2);
+        ctx.arc(boss.x + 60, boss.y + 60, 25, 0, Math.PI * 2);
         ctx.fill();
 
-        // Sariq bossning aylanuvchi mini yordamchilarini chizish
-        if (boss.type === "yellow") {
-          const bossCenterX = boss.x + boss.width / 2;
-          const bossCenterY = boss.y + boss.height / 2;
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(boss.x + 40, boss.y + 40, 10, 10);
+        ctx.fillRect(boss.x + 70, boss.y + 40, 10, 10);
 
-          boss.minions.forEach((minion) => {
-            const mX = bossCenterX + Math.cos(bossAngle + minion.angle) * 60;
-            const mY = bossCenterY + Math.sin(bossAngle + minion.angle) * 60;
+        ctx.fillStyle = "red";
+        ctx.fillRect(boss.x, boss.y + 130, 120, 8);
 
-            ctx.fillStyle = "#ffaa00";
-            ctx.shadowColor = "#ffaa00";
-            ctx.shadowBlur = 10;
-            ctx.beginPath();
-            ctx.arc(mX, mY, 10, 0, Math.PI * 2);
-            ctx.fill();
-          });
-          ctx.shadowColor = bossColor;
-        }
-
-        // Jon (Health) bari
-        ctx.fillStyle = "rgba(255, 0, 0, 0.4)";
-        ctx.fillRect(boss.x, boss.y + 82, 70, 6);
-        ctx.fillStyle = boss.type === "green" ? "#00ff88" : "#00ff88";
+        ctx.fillStyle = "lime";
         ctx.fillRect(
           boss.x,
-          boss.y + 82,
-          70 * (boss.health / boss.maxHealth),
-          6,
+          boss.y + 130,
+          120 * (boss.health / boss.maxHealth),
+          8,
         );
-        ctx.shadowColor = "transparent";
+
+        ctx.shadowBlur = 0;
+        return;
       }
 
-      function checkCollision(rect1, rect2) {
-        return (
-          rect1.x < rect2.x + rect2.width &&
-          rect1.x + rect1.width > rect2.x &&
-          rect1.y < rect2.y + rect2.height &&
-          rect1.y + rect1.height > rect2.y
-        );
+      let bossColor = "#ff0033"; // Qizil standart
+      if (boss.type === "green") bossColor = "#00ff88";
+      if (boss.type === "yellow") bossColor = "#ffd700";
+
+      ctx.shadowColor = bossColor;
+      ctx.shadowBlur = 25;
+      ctx.fillStyle = bossColor;
+      ctx.beginPath();
+      ctx.arc(boss.x + 35, boss.y + 35, 32, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ko'zlar
+      ctx.fillStyle = boss.type === "yellow" ? "#ff0055" : "#ffd700";
+      ctx.beginPath();
+      ctx.arc(boss.x + 23, boss.y + 30, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(boss.x + 47, boss.y + 30, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Sariq bossning aylanuvchi mini yordamchilarini chizish
+      if (boss.type === "yellow") {
+        const bossCenterX = boss.x + boss.width / 2;
+        const bossCenterY = boss.y + boss.height / 2;
+
+        boss.minions.forEach((minion) => {
+          const mX = bossCenterX + Math.cos(bossAngle + minion.angle) * 60;
+          const mY = bossCenterY + Math.sin(bossAngle + minion.angle) * 60;
+
+          ctx.fillStyle = "#ffaa00";
+          ctx.shadowColor = "#ffaa00";
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.arc(mX, mY, 10, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.shadowColor = bossColor;
       }
 
-      function endGame() {
-        gameRunning = false;
-        if (score > record) {
-          record = score;
-          localStorage.setItem("spaceShooterRecord", String(record));
-          if (recordElem) recordElem.textContent = record;
-        }
-        document.getElementById("gameOverScreen").style.display = "block";
-        document.getElementById("finalScore").textContent = score;
-        document.getElementById("finalLevel").textContent = level;
-      }
+      // Jon (Health) bari
+      ctx.fillStyle = "rgba(255, 0, 0, 0.4)";
+      ctx.fillRect(boss.x, boss.y + 82, 70, 6);
+      ctx.fillStyle = boss.type === "green" ? "#00ff88" : "#00ff88";
+      ctx.fillRect(
+        boss.x,
+        boss.y + 82,
+        70 * (boss.health / boss.maxHealth),
+        6,
+      );
+      ctx.shadowColor = "transparent";
+    }
 
-      function gameLoop() {
-        update();
-        draw();
-        requestAnimationFrame(gameLoop);
+    function checkCollision(rect1, rect2) {
+      return (
+        rect1.x < rect2.x + rect2.width &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.y + rect1.height > rect2.y
+      );
+    }
+
+    function endGame() {
+      gameRunning = false;
+      if (score > record) {
+        record = score;
+        localStorage.setItem("spaceShooterRecord", String(record));
+        if (recordElem) recordElem.textContent = record;
       }
-      gameLoop();
-    </script>
-  </body>
+      document.getElementById("gameOverScreen").style.display = "block";
+      document.getElementById("finalScore").textContent = score;
+      document.getElementById("finalLevel").textContent = level;
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+  </script>
+</body>
+
 </html>
